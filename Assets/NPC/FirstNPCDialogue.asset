@@ -12,11 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e0970ff11e7aa734ebfb88ca63006d9b, type: 3}
   m_Name: FirstNPCDialogue
   m_EditorClassIdentifier: 
-  npcName: 
-  npcPortrait: {fileID: 0}
-  dialogueLines: []
+  npcName: FirstNPC
+  npcPortrait: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  dialogueLines:
+  - Hello there!
+  - Welcome to Hagenberg!
+  autoProgressLines: 
+  autoProgressDelay: 1.5
   typingSpeed: 0.05
   voiceSound: {fileID: 0}
   voicePitch: 1
-  autoProgressLine: 
-  autoProgressDelay: 1.5
