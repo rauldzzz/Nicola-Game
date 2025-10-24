@@ -14,15 +14,24 @@ public class GridMovementHold_Commented : MonoBehaviour
 
     private Vector3 targetPosition;      // The next grid position the player will move to
     private bool isMoving = false;       // Is the player currently moving? Prevents overlapping moves
+    private Vector3 lastPosition;        // Used to detect if the player was teleported
 
     void Start()
     {
         // Initialize the target position as the starting position
         targetPosition = transform.position;
+        lastPosition = transform.position;
     }
 
     void Update()
     {
+        // Detect if the player has been teleported (position changed externally)
+        if (Vector3.Distance(transform.position, lastPosition) > gridSize * 0.1f && !isMoving)
+        {
+            // Sync target position to new location
+            targetPosition = transform.position;
+        }
+
         // Only check for input if the player is not currently moving
         if (!isMoving)
         {
@@ -47,7 +56,8 @@ public class GridMovementHold_Commented : MonoBehaviour
                 if (!obstacleTilemap.HasTile(nextCell))
                 {
                     Vector3 newPos = targetPosition + inputDirection * gridSize;
-                    
+
+                    // Round new position to the nearest 0.5 to stay aligned with grid
                     newPos = RoundToHalf(newPos);
 
                     // Start the coroutine to move the player smoothly to the next tile
@@ -55,6 +65,9 @@ public class GridMovementHold_Commented : MonoBehaviour
                 }
             }
         }
+
+        // Update last position tracker
+        lastPosition = transform.position;
     }
 
     private IEnumerator MoveToPosition(Vector3 newPos)
