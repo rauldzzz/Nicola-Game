@@ -1,16 +1,14 @@
 using UnityEngine;
 
-public class Deathzone : MonoBehaviour
+public class DeathZone : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        // If the player touches the death zone
+        if (other.CompareTag("Player"))
+        {
+            Debug.Log("Player has died — respawning...");
+            RespawnManager.Instance.RespawnPlayer(other.gameObject);
+        }
     }
 }
