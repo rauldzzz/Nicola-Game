@@ -63,7 +63,16 @@ public class PlayerHealth : MonoBehaviour
 
     private void Die()
     {
-        Debug.Log("Player died! (Later trigger death popup)");
-        // TODO: Trigger death UI and disable controls
+        Debug.Log("Player died! Trigger death popup");
+
+        // Disable player controls (optional, add your movement disable here)
+        PlayerMovement2DPolished_Controls movement = GetComponent<PlayerMovement2DPolished_Controls>();
+        if (movement != null)
+            movement.enabled = false;
+
+        // Show death popup
+        DeathPopupManager popupManager = FindAnyObjectByType<DeathPopupManager>();
+        if (popupManager != null)
+            popupManager.ShowDeathPopup();
     }
 }
