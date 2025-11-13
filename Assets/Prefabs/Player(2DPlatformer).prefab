@@ -13,6 +13,8 @@ GameObject:
   - component: {fileID: 6545332564851435920}
   - component: {fileID: 6670508724302196333}
   - component: {fileID: 3460321575053344538}
+  - component: {fileID: 1243377716479685435}
+  - component: {fileID: 1166321814660114263}
   m_Layer: 3
   m_Name: Player(2DPlatformer)
   m_TagString: Player
@@ -184,7 +186,40 @@ MonoBehaviour:
   groundCheckRadius: 0.1
   groundLayer:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 128
+--- !u!114 &1243377716479685435
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4438305519733076087}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62b57b5c415d1814c9685d5e3f86b66c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 3
+  currentHealth: 3
+  invulnerabilityDuration: 1
+  flashColor: {r: 1, g: 0.5264151, b: 0.5264151, a: 1}
+  flashSpeed: 0.1
+--- !u!114 &1166321814660114263
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4438305519733076087}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3ee014db29bc2c448e62c0c0f61ae6f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemyTag: Enemy
+  hazardTag: Hazard
+  knockbackForce: 5
+  bounceForce: 8
 --- !u!1 &6787960002335452741
 GameObject:
   m_ObjectHideFlags: 0
@@ -194,7 +229,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7789948546433372696}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: GroundCheck
   m_TagString: Untagged
   m_Icon: {fileID: 0}

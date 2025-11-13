@@ -1,11 +1,12 @@
+using System.Collections;
 using UnityEngine;
 
 /// <summary>
 /// A self-contained 2D patrolling enemy that automatically turns around when it detects
-/// a wall or ledge. It damages the player on contact.
+/// a wall or ledge. It damages the player on contact and can be stomped.
 /// </summary>
 [RequireComponent(typeof(Rigidbody2D), typeof(SpriteRenderer))]
-public class EnemyPatrol_Auto : MonoBehaviour
+public class EnemyPatrol_Auto : MonoBehaviour, IStompable
 {
     [Header("Movement Settings")]
     public float moveSpeed = 2f;                     // Horizontal patrol speed
@@ -17,18 +18,25 @@ public class EnemyPatrol_Auto : MonoBehaviour
     public int damageAmount = 1;                     // How much damage to deal to player
     public float knockbackForce = 5f;                // Knockback applied to player when touched
 
+    [Header("Stomp Settings")]
+    public float flashDuration = 0.2f;              // Flash duration when stomped
+    public bool isStomped = false;                  // Flag to prevent multiple stomps
+
     [Header("References")]
     public Transform groundCheck;                    // Empty child at the enemy’s feet
     public Transform wallCheck;                      // Empty child in front of the enemy
+    public SpriteRenderer spriteRenderer;           // SpriteRenderer reference
 
     private Rigidbody2D rb;
-    private SpriteRenderer spriteRenderer;
     private bool movingRight = true;                 // Direction flag
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        spriteRenderer = GetComponent<SpriteRenderer>();
+
+        // Ensure spriteRenderer is assigned
+        if (spriteRenderer == null)
+            spriteRenderer = GetComponent<SpriteRenderer>();
 
         // Safety check: create placeholders if not assigned
         if (groundCheck == null)
@@ -50,7 +58,8 @@ public class EnemyPatrol_Auto : MonoBehaviour
 
     void Update()
     {
-        Patrol();
+        if (!isStomped) // Only patrol if not stomped
+            Patrol();
     }
 
     /// <summary>
@@ -94,29 +103,35 @@ public class EnemyPatrol_Auto : MonoBehaviour
         wallCheck.localPosition = wcLocalPos;
     }
 
-    /// <summary>
-    /// Damages player on collision.
-    /// </summary>
-    private void OnCollisionEnter2D(Collision2D collision)
+    // Called by PlayerDamageHandler when stomped
+    public void Stomped()
     {
-        if (collision.gameObject.CompareTag("Player"))
-        {
-            PlayerHealth playerHealth = collision.gameObject.GetComponent<PlayerHealth>();
-            if (playerHealth != null && !playerHealth.IsInvulnerable)
-            {
-                playerHealth.TakeDamage(damageAmount);
-
-                // Optional knockback
-                Rigidbody2D playerRb = collision.gameObject.GetComponent<Rigidbody2D>();
-                if (playerRb != null)
-                {
-                    Vector2 knockDir = (collision.transform.position - transform.position).normalized;
-                    playerRb.AddForce(knockDir * knockbackForce, ForceMode2D.Impulse);
-                }
-            }
-        }
+        if (isStomped) return;
+        isStomped = true;
+        StartCoroutine(StompDeathRoutine());
     }
 
+    private IEnumerator StompDeathRoutine()
+    {
+        // Stop movement immediately
+        rb.velocity = Vector2.zero;
+
+        // Disable collider so player doesn't hit it again
+        Collider2D col = GetComponent<Collider2D>();
+        if (col != null) col.enabled = false;
+
+        // Optionally disable patrol script to stop movement
+        this.enabled = false;
+
+        // Flash white
+        Color original = spriteRenderer.color;
+        spriteRenderer.color = Color.white;
+
+        yield return new WaitForSeconds(flashDuration);
+
+        Destroy(gameObject);
+    }
+    
     void OnDrawGizmosSelected()
     {
         if (groundCheck != null)

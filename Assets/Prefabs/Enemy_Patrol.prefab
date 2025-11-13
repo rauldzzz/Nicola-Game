@@ -10,12 +10,12 @@ GameObject:
   m_Component:
   - component: {fileID: 8361152509250174184}
   - component: {fileID: 282589273837417784}
-  - component: {fileID: 3958547363619762259}
+  - component: {fileID: 516986721918644659}
   - component: {fileID: 5116447785290786826}
   - component: {fileID: 6349071445069599343}
   m_Layer: 6
   m_Name: Enemy_Patrol
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -92,7 +92,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!70 &3958547363619762259
+--- !u!70 &516986721918644659
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -176,8 +176,11 @@ MonoBehaviour:
     m_Bits: 128
   damageAmount: 3
   knockbackForce: 5
+  flashDuration: 0.2
+  isStomped: 0
   groundCheck: {fileID: 8584317342919527365}
   wallCheck: {fileID: 7415867783043245262}
+  spriteRenderer: {fileID: 282589273837417784}
 --- !u!1 &5810027292315422807
 GameObject:
   m_ObjectHideFlags: 0
