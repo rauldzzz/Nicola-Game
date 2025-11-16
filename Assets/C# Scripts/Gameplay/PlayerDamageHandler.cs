@@ -49,7 +49,7 @@ public class PlayerDamageHandler : MonoBehaviour
                 stompable.Stomped();
 
             // Bounce the player
-            rb.velocity = new Vector2(rb.velocity.x, bounceForce);
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, bounceForce);
 
             return; // Exit early so player does not take damage
         }
@@ -64,7 +64,7 @@ public class PlayerDamageHandler : MonoBehaviour
                 if (collision.gameObject.CompareTag(enemyTag))
                 {
                     Vector2 knockDir = (transform.position - collision.transform.position).normalized;
-                    rb.velocity = Vector2.zero;
+                    rb.linearVelocity = Vector2.zero;
                     rb.AddForce(knockDir * knockbackForce, ForceMode2D.Impulse);
                 }
             }

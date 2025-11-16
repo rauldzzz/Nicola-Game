@@ -114,7 +114,7 @@ public class EnemyPatrol_Auto : MonoBehaviour, IStompable
     private IEnumerator StompDeathRoutine()
     {
         // Stop movement immediately
-        rb.velocity = Vector2.zero;
+        rb.linearVelocity = Vector2.zero;
 
         // Disable collider so player doesn't hit it again
         Collider2D col = GetComponent<Collider2D>();
