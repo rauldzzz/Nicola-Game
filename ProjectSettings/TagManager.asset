@@ -5,16 +5,18 @@ TagManager:
   serializedVersion: 3
   tags:
   - Activator
+  - Enemy
+  - Hazard
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Player
   - Water
   - UI
+  - NPC
   - GroundLayer
   - BackgroundLayer
-  - 
   - 
   - 
   - 
