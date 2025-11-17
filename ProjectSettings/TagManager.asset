@@ -3,7 +3,8 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 3
-  tags: []
+  tags:
+  - Activator
   layers:
   - Default
   - TransparentFX
@@ -41,7 +42,7 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: Deco
+  - name: Notes
     uniqueID: 3142224129
     locked: 0
   m_RenderingLayers:
