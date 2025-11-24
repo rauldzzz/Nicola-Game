@@ -17,6 +17,9 @@ MonoBehaviour:
   dialogueLines:
   - Hello there!
   - Welcome to Hagenberg!
+  - Above me you can find the first Level.
+  - There is a Key inside the Level. Get it so you can proceed to the next Level
+  - Good Luck and have fun!
   autoProgressLines: 
   autoProgressDelay: 1.5
   typingSpeed: 0.05

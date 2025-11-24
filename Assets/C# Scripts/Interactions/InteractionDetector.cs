@@ -3,32 +3,41 @@ using UnityEngine.InputSystem;
 
 public class InteractionDetector : MonoBehaviour
 {
-    private IInteractable interactableInRange = null; // Closest Interactable
+    private IInteractable interactableInRange = null; // Closest interactable
     public GameObject interactionIcon;
 
     [Header("Interaction Settings")]
     public KeyCode interactionKey = KeyCode.E; // The key to press for interaction
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    private GridMovementHold_Commented playerMovement;
+
     void Start()
     {
+        playerMovement = GameObject.FindGameObjectWithTag("Player")?.GetComponent<GridMovementHold_Commented>();
         interactionIcon.SetActive(false);
     }
 
     void Update()
     {
-        // Optional: Allow keyboard interaction without the Input System action
-        if (interactableInRange != null && Input.GetKeyDown(interactionKey))
+        // Only allow interaction if player is in range and NOT moving
+        if (interactableInRange != null && (playerMovement == null || !playerMovement.IsMoving))
         {
-            interactableInRange.Interact();
+            if (Input.GetKeyDown(interactionKey))
+                interactableInRange.Interact();
         }
+        if (interactableInRange != null)
+        {
+            interactionIcon.SetActive(!playerMovement.IsMoving);
+        }
+
     }
+
 
     public void Oninteract(InputAction.CallbackContext context)
     {
-        if (context.performed)
+        if (context.performed && interactableInRange != null && (playerMovement == null || !playerMovement.IsMoving))
         {
-            interactableInRange?.Interact();
+            interactableInRange.Interact();
         }
     }
 
@@ -45,11 +54,8 @@ public class InteractionDetector : MonoBehaviour
     {
         if (collision.TryGetComponent(out IInteractable interactable) && interactable == interactableInRange)
         {
-            // If this interactable is an NPC, end its dialogue
             if (interactable is NPC npc)
-            {
-                npc.EndDialogue(); // automatically ends dialogue if player leaves
-            }
+                npc.EndDialogue();
 
             interactableInRange = null;
             interactionIcon.SetActive(false);

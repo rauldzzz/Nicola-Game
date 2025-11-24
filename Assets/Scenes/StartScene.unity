@@ -437,10 +437,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02cbfe0d4f53e6b45bd76fe7b9c15fd2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  highlightImage: {fileID: 0}
-  fadeSpeed: 5
-  scrollSpeed: 0.5
-  pingPongScroll: 1
 --- !u!222 &428969397
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -838,10 +834,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02cbfe0d4f53e6b45bd76fe7b9c15fd2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  highlightImage: {fileID: 0}
-  fadeSpeed: 5
-  scrollSpeed: 0.5
-  pingPongScroll: 1
 --- !u!114 &1313749132
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1077,10 +1069,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02cbfe0d4f53e6b45bd76fe7b9c15fd2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  highlightImage: {fileID: 0}
-  fadeSpeed: 5
-  scrollSpeed: 0.5
-  pingPongScroll: 1
 --- !u!222 &1649670219
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1356,7 +1344,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44b34b822fcc1ce4db06a49068cdcbdb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneToLoad: OverworldScene
+  sceneToLoad: 
   uiGroup: {fileID: 1088003665}
   buttonHighlight: {fileID: 1858745181}
   transitionText: {fileID: 233708059}
