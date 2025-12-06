@@ -1,21 +1,20 @@
-using System.Collections;  
+using System.Collections;
 using UnityEngine;
-
 
 [RequireComponent(typeof(Collider2D))]
 public class Coin : MonoBehaviour
 {
     [Header("Coin Settings")]
-    public int coinValue = 1; // How much this coin adds to the counter
-    public AudioClip collectSound;
-    public float popDuration = 0.2f; // Duration of the pop effect
-    public float popScale = 1.5f;    // How big the coin grows
+    public int coinValue = 1;              // How much this coin adds to the counter
+    public AudioClip collectSound;         // Optional sound
+    public float popDuration = 0.2f;       // Pop animation duration
+    public float popScale = 1.5f;          // Pop scale multiplier
 
     private bool collected = false;
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collected) return; // prevent double collection
+        if (collected) return;
 
         if (collision.CompareTag("Player"))
         {
@@ -24,11 +23,11 @@ public class Coin : MonoBehaviour
             // Increase coin count
             CoinManager.Instance.AddCoins(coinValue);
 
-            // Play sound
+            // Play coin sound
             if (collectSound != null)
                 AudioSource.PlayClipAtPoint(collectSound, transform.position);
 
-            // Start visual feedback and destroy after
+            // Play pop animation and destroy
             StartCoroutine(PopAndDestroy());
         }
     }
@@ -39,7 +38,7 @@ public class Coin : MonoBehaviour
         Vector3 targetScale = originalScale * popScale;
         float elapsed = 0f;
 
-        // Pop effect: scale up quickly
+        // Scale up quickly
         while (elapsed < popDuration)
         {
             elapsed += Time.deltaTime;
@@ -47,7 +46,7 @@ public class Coin : MonoBehaviour
             yield return null;
         }
 
-        // Optionally fade out (if using SpriteRenderer)
+        // Fade out if using SpriteRenderer
         SpriteRenderer sr = GetComponent<SpriteRenderer>();
         if (sr != null)
         {
@@ -57,7 +56,8 @@ public class Coin : MonoBehaviour
             while (elapsed < fadeTime)
             {
                 elapsed += Time.deltaTime;
-                sr.color = new Color(originalColor.r, originalColor.g, originalColor.b, Mathf.Lerp(1f, 0f, elapsed / fadeTime));
+                sr.color = new Color(originalColor.r, originalColor.g, originalColor.b,
+                                     Mathf.Lerp(1f, 0f, elapsed / fadeTime));
                 yield return null;
             }
         }

@@ -16,6 +16,8 @@ public class GridMovementHold_Commented : MonoBehaviour
     private bool isMoving = false;       // Is the player currently moving? Prevents overlapping moves
     private Vector3 lastPosition;        // Used to detect if the player was teleported
 
+    public bool IsMoving => isMoving;
+
     void Start()
     {
         // Initialize the target position as the starting position

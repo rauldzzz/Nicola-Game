@@ -58,7 +58,7 @@ public class DeathPopupManager : MonoBehaviour
     public void LoadOverworld()
     {
         ResumeTime();
-        SceneManager.LoadScene("OverworldScene"); // Replace with your overworld scene name
+        SceneManager.LoadScene("OWTest");
     }
 
     /// <summary>
@@ -67,6 +67,6 @@ public class DeathPopupManager : MonoBehaviour
     public void LoadTitleScreen()
     {
         ResumeTime();
-        SceneManager.LoadScene("StartScene"); // Replace with your title scene name
+        SceneManager.LoadScene("StartScene");
     }
 }
