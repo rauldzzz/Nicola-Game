@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using System.Collections;
 
-public class GridMovementHold_Commented : MonoBehaviour
+public class GridMovementHold : MonoBehaviour
 {
     [Header("Grid Settings")]
     public float gridSize = 1f;          // Size of one tile/grid cell

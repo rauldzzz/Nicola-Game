@@ -9,11 +9,11 @@ public class InteractionDetector : MonoBehaviour
     [Header("Interaction Settings")]
     public KeyCode interactionKey = KeyCode.E; // The key to press for interaction
 
-    private GridMovementHold_Commented playerMovement;
+    private GridMovementHold playerMovement;
 
     void Start()
     {
-        playerMovement = GameObject.FindGameObjectWithTag("Player")?.GetComponent<GridMovementHold_Commented>();
+        playerMovement = GameObject.FindGameObjectWithTag("Player")?.GetComponent<GridMovementHold>();
         interactionIcon.SetActive(false);
     }
 
