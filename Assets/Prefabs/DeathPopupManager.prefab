@@ -44,7 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a48b9b6226a19df489b9d9b95e9054c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  deathPopup: {fileID: 3859493064806852513}
+  deathPopup: {fileID: 658038648101683468, guid: e38449ff576eb9640824842d2af7e912, type: 3}
   respawnPoint: {fileID: 0}
   autoUsePlayerPosition: 1
   resetSceneName: 
