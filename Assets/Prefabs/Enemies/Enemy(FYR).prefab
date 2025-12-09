@@ -112,7 +112,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: 6c0257121d8e7154eaa88f21c4e054b3, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -203,6 +203,9 @@ MonoBehaviour:
   gridSize: 1
   moveSpeed: 2
   obstacleTilemap: {fileID: 0}
+  deathDuration: 1
+  maxScaleIncrease: 1.5
+  spriteRenderer: {fileID: 4333609388370268794}
 --- !u!114 &2643379286205576561
 MonoBehaviour:
   m_ObjectHideFlags: 0

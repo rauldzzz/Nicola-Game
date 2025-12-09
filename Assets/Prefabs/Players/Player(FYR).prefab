@@ -76,7 +76,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 2
   m_Sprite: {fileID: -687715137, guid: b310eb6613f1f8d41a65a15684cca07c, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -276,7 +276,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 2
   m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
   m_Color: {r: 1, g: 0, b: 0.046300888, a: 1}
   m_FlipX: 0
@@ -395,6 +395,8 @@ MonoBehaviour:
   attackVisualOffset: -0.2
   attackObject: {fileID: 389833511968249210}
   movementScript: {fileID: 916462179160233858}
+  width: 1.6
+  height: 1.6
 --- !u!114 &3119937766364507442
 MonoBehaviour:
   m_ObjectHideFlags: 0

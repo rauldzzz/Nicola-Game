@@ -17,6 +17,10 @@ public class PlayerAttack_GridAnimated : MonoBehaviour
     [Header("Movement Reference")]
     public GridMovementHold movementScript;
 
+    [Header("Hitboxsize")]
+    public float width = 0.8f;
+    public float height = 0.8f;
+
     private Animator attackAnimator;
     private SpriteRenderer attackSprite;
     private bool isAttacking = false;
@@ -70,7 +74,7 @@ public class PlayerAttack_GridAnimated : MonoBehaviour
         attackAnimator.Play("AttackAnimation", -1, 0f);
 
         // Define hitbox size (adjust width/height as needed)
-        Vector2 hitboxSize = new Vector2(0.8f, 0.8f);
+        Vector2 hitboxSize = new Vector2(width, height);
 
         // Calculate rotation angle for OverlapBox
         float angle = Mathf.Atan2(lastMoveDirection.y, lastMoveDirection.x) * Mathf.Rad2Deg;
