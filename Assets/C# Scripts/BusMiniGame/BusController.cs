@@ -6,14 +6,22 @@ public class BusController : MonoBehaviour
     public float switchSpeed = 10f;
 
     private float targetX;
-    private bool isRightLane = false; 
+    private bool isRightLane = false;
+
+    private bool isCutscene = false;
 
     private DeathPopupManager deathPopupManager;
 
     void Start()
     {
-        // Set initial lane
-        targetX = -laneDistance;
+        if (transform.position.x > 0)
+        {
+            targetX = laneDistance; // Start in Right Lane
+        }
+        else
+        {
+            targetX = -laneDistance; // Start in Left Lane
+        }
 
         // Find the DeathPopupManager in the scene
         deathPopupManager = Object.FindFirstObjectByType<DeathPopupManager>();
@@ -25,21 +33,36 @@ public class BusController : MonoBehaviour
 
     void Update()
     {
-        // Switch lanes left/right
-        if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D))
+        if (!isCutscene)
         {
-            isRightLane = true;
-            targetX = laneDistance;
-        }
-        else if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A))
-        {
-            isRightLane = false;
-            targetX = -laneDistance;
-        }
+            if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D))
+            {
+                targetX = laneDistance;
+            }
+            else if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A))
+            {
+                targetX = -laneDistance;
+            }
 
-        // Smooth transition between lanes
-        Vector3 targetPosition = new Vector3(targetX, transform.position.y, transform.position.z);
-        transform.position = Vector3.Lerp(transform.position, targetPosition, switchSpeed * Time.deltaTime);
+            // Normal movement (X axis only, Y stays at -3)
+            Vector3 targetPos = new Vector3(targetX, -5f, transform.position.z);
+            transform.position = Vector3.Lerp(transform.position, targetPos, switchSpeed * Time.deltaTime);
+        }
+        // 2. Cutscene Movement (Auto-drive to station)
+        else
+        {
+            // Target: Right Lane (laneDistance) and Middle of Screen (Y = 0)
+            Vector3 stationPos = new Vector3(laneDistance, 0f, transform.position.z);
+
+            // Move smoothly towards station (slower speed looks nicer for parking)
+            transform.position = Vector3.Lerp(transform.position, stationPos, 2f * Time.deltaTime);
+        }
+    }
+
+    // Call this to trigger the ending
+    public void StartArrivalSequence()
+    {
+        isCutscene = true;
     }
 
     void OnTriggerEnter2D(Collider2D other)

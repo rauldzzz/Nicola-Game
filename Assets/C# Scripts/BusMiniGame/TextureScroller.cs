@@ -3,6 +3,7 @@ using UnityEngine;
 public class TextureScroller : MonoBehaviour
 {
     private Renderer rend;
+    private float currentOffset = 0f; // We track the offset ourselves now
 
     void Start()
     {
@@ -11,17 +12,18 @@ public class TextureScroller : MonoBehaviour
 
     void Update()
     {
-        // 1. Get the global speed
         float currentSpeed = BusGameManager.Instance.gameSpeed;
 
-        // 2. Calculate how fast the texture should slide relative to the object's size
-        // If the object is tall (Scale Y is high), the texture needs to scroll slower to cover the same distance.
+        // Calculate how much to move THIS frame only
         float textureSpeed = currentSpeed / transform.localScale.y;
 
-        // 3. Apply the offset
-        // We use repeat (modulo 1) to keep the numbers small, though usually not strictly necessary
-        float offset = (Time.time * textureSpeed) % 1;
+        // Add this tiny movement to our total offset
+        currentOffset += textureSpeed * Time.deltaTime;
 
-        rend.material.mainTextureOffset = new Vector2(0, offset); // Negative to move down
+        // Keep the number between 0 and 1 so it doesn't get too big over time
+        currentOffset = currentOffset % 1;
+
+        // Apply it
+        rend.material.mainTextureOffset = new Vector2(0, currentOffset);
     }
 }
