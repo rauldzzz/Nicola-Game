@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.Tilemaps;
 using System.Collections;
 
 public class GridMovementHold : MonoBehaviour
@@ -8,9 +7,6 @@ public class GridMovementHold : MonoBehaviour
     public float gridSize = 1f;          // Size of one tile/grid cell
     public float moveSpeed = 5f;         // Speed at which the player moves to the next tile
     public float moveDelay = 0.15f;      // Small delay between moves when holding a key
-
-    [Header("Tilemaps")]
-    public Tilemap obstacleTilemap;      // Reference to the tilemap that contains obstacles
 
     private Vector3 targetPosition;      // The next grid position the player will move to
     private bool isMoving = false;       // Is the player currently moving? Prevents overlapping moves
@@ -30,16 +26,15 @@ public class GridMovementHold : MonoBehaviour
         // Detect if the player has been teleported (position changed externally)
         if (Vector3.Distance(transform.position, lastPosition) > gridSize * 0.1f && !isMoving)
         {
-            // Sync target position to new location
+            // Sync target position to new location 
             targetPosition = transform.position;
         }
 
-        // Only check for input if the player is not currently moving
         if (!isMoving)
         {
-            Vector3 inputDirection = Vector3.zero; // Direction we want to move in this frame
+            Vector3 inputDirection = Vector3.zero;
 
-            // Check which key is being held down
+            // Detect key input
             if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
                 inputDirection = Vector3.up;
             else if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
@@ -51,58 +46,35 @@ public class GridMovementHold : MonoBehaviour
 
             if (inputDirection != Vector3.zero)
             {
-                // Convert the next position into a cell coordinate on the obstacle tilemap
-                Vector3Int nextCell = obstacleTilemap.WorldToCell(targetPosition + inputDirection * gridSize);
+                // Check for obstacles using Physics2D
+                Vector3 nextPos = targetPosition + inputDirection * gridSize;
+                Collider2D hit = Physics2D.OverlapCircle(nextPos, 0.2f, LayerMask.GetMask("Obstacles"));
 
-                // Only move if there is NO obstacle tile in the target cell
-                if (!obstacleTilemap.HasTile(nextCell))
+                if (hit == null)
                 {
-                    Vector3 newPos = targetPosition + inputDirection * gridSize;
-
-                    // Round new position to the nearest 0.5 to stay aligned with grid
-                    newPos = RoundToHalf(newPos);
-
-                    // Start the coroutine to move the player smoothly to the next tile
-                    StartCoroutine(MoveToPosition(newPos));
+                    // Start moving
+                    StartCoroutine(MoveToPosition(nextPos));
                 }
             }
         }
 
-        // Update last position tracker
         lastPosition = transform.position;
     }
 
     private IEnumerator MoveToPosition(Vector3 newPos)
     {
-        // Set the moving flag so no new input is processed until movement finishes
         isMoving = true;
 
-        // Move the player smoothly to the target position over time
         while (Vector3.Distance(transform.position, newPos) > 0.01f)
         {
             transform.position = Vector3.MoveTowards(transform.position, newPos, moveSpeed * Time.deltaTime);
-            yield return null; // Wait until next frame
+            yield return null;
         }
 
-        // Snap exactly to the target position
         transform.position = newPos;
-
-        // Update targetPosition so the next movement starts from here
         targetPosition = newPos;
-
-        // Reset moving flag to allow next input
         isMoving = false;
 
-        // Small delay before allowing the next move to make holding keys feel natural
         yield return new WaitForSeconds(moveDelay);
-    }
-
-    // Helper function: rounds each component to the nearest 0.5
-    private Vector3 RoundToHalf(Vector3 pos)
-    {
-        pos.x = Mathf.Round(pos.x * 2f) / 2f;
-        pos.y = Mathf.Round(pos.y * 2f) / 2f;
-        pos.z = Mathf.Round(pos.z * 2f) / 2f;
-        return pos;
     }
 }

@@ -202,7 +202,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridSize: 1
   moveSpeed: 2
-  obstacleTilemap: {fileID: 0}
+  obstacleLayer:
+    serializedVersion: 2
+    m_Bits: 128
   deathDuration: 1
   maxScaleIncrease: 1.5
   spriteRenderer: {fileID: 4333609388370268794}
