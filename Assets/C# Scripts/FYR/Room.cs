@@ -27,7 +27,7 @@ public class Room : MonoBehaviour
 
     void Awake()
     {
-         if (wallTilemap != null)
+        if (wallTilemap != null)
         {
             BoundsInt b = wallTilemap.cellBounds;
             roomSize = new Vector2Int(b.size.x, b.size.y);

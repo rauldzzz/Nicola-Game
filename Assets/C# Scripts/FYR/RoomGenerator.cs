@@ -28,7 +28,7 @@ public class RoomGenerator : MonoBehaviour
         occupiedCells.Clear();
         allRooms.Clear();
 
-        // --- 1. Place Start Room ---
+        // 1. Place Start Room 
         if (!CheckRoomData(startRoom, "Start Room")) return;
         Room start = Instantiate(startRoom.prefab).GetComponent<Room>();
         start.transform.position = Vector3.zero;
@@ -36,7 +36,7 @@ public class RoomGenerator : MonoBehaviour
         MarkRoomCells(start, start.gridPos);
         allRooms.Add(start);
 
-        // --- Open entrances list ---
+        // Open entrances list 
         List<(Room room, Entrance.Direction dir)> openEntrances = new();
         foreach (var dir in directions)
         {
@@ -45,7 +45,7 @@ public class RoomGenerator : MonoBehaviour
                 openEntrances.Add((start, dir));
         }
 
-        // --- 2. Place Normal Rooms (1-6) ---
+        // 2. Place Normal Rooms (1-6) 
         List<RoomData> normalQueue = new List<RoomData>(normalRooms);
         ShuffleList(normalQueue);
 
@@ -98,11 +98,15 @@ public class RoomGenerator : MonoBehaviour
         }
 
 
-        // --- 3. Place End Room ---
+        // 3. Place End Room 
         bool endPlaced = false;
         ShuffleList(openEntrances);
+
         foreach (var (parent, dir) in openEntrances.ToArray())
         {
+            if (parent == startRoom)
+                continue;
+
             RoomData endData = FindFittingEndRoomAtEntrance(parent, dir);
             if (endData != null)
             {
@@ -110,15 +114,18 @@ public class RoomGenerator : MonoBehaviour
                 {
                     allRooms.Add(placed);
                     endPlaced = true;
+
                     openEntrances.Remove((parent, dir));
                     break;
                 }
             }
         }
+
         if (!endPlaced)
             Debug.LogWarning("Could not place any end room!");
 
-        // --- 4. Fill remaining open entrances with dead-ends ---
+
+        // 4. Fill remaining open entrances with dead-ends
         foreach (var (parent, dir) in openEntrances)
         {
             RoomData deadData = FindDeadEndForDirection(OppositeDirection(dir));
@@ -126,10 +133,10 @@ public class RoomGenerator : MonoBehaviour
                 TryPlaceNextRoomAtOpenEntrance(parent, dir, deadData, out _);
         }
 
-        // --- 5. Connect entrances ---
+        // 5. Connect entrances  
         ConnectEntrances();
 
-        // --- 6. Spawn Player and Enemies ---
+        // 6. Spawn Player and Enemies  
         SpawnEntities();
 
         Debug.Log("Map generation complete!");
@@ -155,7 +162,7 @@ public class RoomGenerator : MonoBehaviour
         return true;
     }
 
-    // --- Main placement function ---
+    // Main placement function  
     bool TryPlaceNextRoomAtOpenEntrance(Room parent, Entrance.Direction parentOpenDir, RoomData roomData, out Room placed)
     {
         placed = null;
@@ -170,11 +177,11 @@ public class RoomGenerator : MonoBehaviour
         Vector3 childEntranceLocal = childPrefab.GetEntrance(requiredDir).transform.localPosition;
         Vector3 spawnPos = parentEntrancePos - childEntranceLocal;
 
-        // --- Check for overlaps ---
+        // Check for overlaps  
         if (!CanPlaceRoom(childPrefab, spawnPos))
             return false;
 
-        // --- Size-aware checks ---
+        // Size-aware checks  
         if (!RoomSizeFits(childPrefab, spawnPos))
             return false;
 
@@ -192,7 +199,7 @@ public class RoomGenerator : MonoBehaviour
         return true;
     }
 
-    // --- Size-aware placement logic ---
+    // Size-aware placement logic  
     bool RoomSizeFits(Room room, Vector3 pos)
     {
         Vector2Int bottomLeft = GetBottomLeftGridPos(room, pos);
