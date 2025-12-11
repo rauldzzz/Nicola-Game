@@ -60,6 +60,7 @@ TagManager:
     uniqueID: 2617558619
     locked: 0
   - name: Decor
+  - name: Notes
     uniqueID: 3142224129
     locked: 0
   m_RenderingLayers:
