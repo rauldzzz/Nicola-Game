@@ -21,9 +21,9 @@ public class Room : MonoBehaviour
     public Vector2Int roomSize;     // exact size in cells
     public Vector2 roomWorldSize;   // exact world size in units
 
-
     [HideInInspector] public Vector2Int gridPos; // position on the Map grid
 
+    [HideInInspector] public RoomType type;
 
     void Awake()
     {
@@ -50,5 +50,4 @@ public class Room : MonoBehaviour
             _ => null
         };
     }
-
 }

@@ -1,13 +1,14 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class RoomGenerator : MonoBehaviour
 {
     [Header("Room Data")]
     public RoomData startRoom;
-    public RoomData[] normalRooms;   // 1-6
-    public RoomData[] endRooms;      // 1 per direction
-    public RoomData[] deadEndRooms;  // 7-10
+    public RoomData[] normalRooms;
+    public RoomData[] endRooms;
+    public RoomData[] deadEndRooms;
 
     [Header("Prefabs")]
     public Transform playerPrefab;
@@ -15,8 +16,15 @@ public class RoomGenerator : MonoBehaviour
 
     private Dictionary<Vector2Int, Room> occupiedCells = new();
     private List<Room> allRooms = new();
+    private Dictionary<Room, List<Room>> roomGraph = new();
+
     private readonly Entrance.Direction[] directions =
-        { Entrance.Direction.Up, Entrance.Direction.Down, Entrance.Direction.Left, Entrance.Direction.Right };
+    {
+        Entrance.Direction.Up,
+        Entrance.Direction.Down,
+        Entrance.Direction.Left,
+        Entrance.Direction.Right
+    };
 
     void Start()
     {
@@ -27,16 +35,17 @@ public class RoomGenerator : MonoBehaviour
     {
         occupiedCells.Clear();
         allRooms.Clear();
+        roomGraph.Clear();
 
-        // 1. Place Start Room 
-        if (!CheckRoomData(startRoom, "Start Room")) return;
+        // 1. Place Start Room
         Room start = Instantiate(startRoom.prefab).GetComponent<Room>();
+        start.type = RoomType.Start;
         start.transform.position = Vector3.zero;
         start.gridPos = GetBottomLeftGridPos(start, Vector3.zero);
         MarkRoomCells(start, start.gridPos);
         allRooms.Add(start);
+        roomGraph[start] = new List<Room>();
 
-        // Open entrances list 
         List<(Room room, Entrance.Direction dir)> openEntrances = new();
         foreach (var dir in directions)
         {
@@ -45,272 +54,245 @@ public class RoomGenerator : MonoBehaviour
                 openEntrances.Add((start, dir));
         }
 
-        // 2. Place Normal Rooms (1-6) 
-        List<RoomData> normalQueue = new List<RoomData>(normalRooms);
+        // Track which rooms (3-6) have been placed
+        HashSet<string> requiredRooms = new() { "Room3Data", "Room4Data", "Room5Data", "Room6Data" };
+
+        // 2. Place normal rooms
+        List<RoomData> normalQueue = new(normalRooms);
         ShuffleList(normalQueue);
 
-        int room1Count = 0;
-        int room2Count = 0;
-        bool firstRoomPlaced = false;
-
-        foreach (var roomData in normalQueue)
+        foreach (var data in normalQueue)
         {
-            // Skip Room 5/6 for the first room
-            if (!firstRoomPlaced && (roomData.name == "Room5Data" || roomData.name == "Room6Data"))
-                continue;
-
-            // Skip Room 1 or 2 if already appeared 3 times
-            if (roomData.name == "Room1Data" && room1Count >= 3) continue;
-            if (roomData.name == "Room2Data" && room2Count >= 3) continue;
-
-            bool placedRoom = false;
             ShuffleList(openEntrances);
-
             foreach (var (parent, dir) in openEntrances.ToArray())
             {
-                if (TryPlaceNextRoomAtOpenEntrance(parent, dir, roomData, out Room placed))
+                // Room5 and Room6 cannot be placed directly next to start
+                if (parent == start && (data.name == "Room5Data" || data.name == "Room6Data")) continue;
+
+                if (TryPlaceNextRoomAtOpenEntrance(parent, dir, data, out Room placed))
                 {
+                    placed.type = data.type;
                     allRooms.Add(placed);
-                    placedRoom = true;
+                    openEntrances.Remove((parent, dir));
 
-                    firstRoomPlaced = true;
+                    if (requiredRooms.Contains(data.name)) requiredRooms.Remove(data.name);
 
-                    // Update counts
-                    if (roomData.name == "Room1Data") room1Count++;
-                    if (roomData.name == "Room2Data") room2Count++;
-
-                    // Add child’s open entrances
-                    foreach (var newDir in directions)
+                    foreach (var d in directions)
                     {
-                        var e = placed.GetEntrance(newDir);
+                        var e = placed.GetEntrance(d);
                         if (e != null && e.gameObject.activeSelf)
-                            openEntrances.Add((placed, newDir));
+                            openEntrances.Add((placed, d));
+                    }
+                    break;
+                }
+            }
+        }
+
+        // 2b. Ensure required rooms 3-6 are placed at least once
+        foreach (string roomName in requiredRooms)
+        {
+            RoomData data = normalRooms.FirstOrDefault(r => r.name == roomName);
+            if (data == null) continue;
+
+            ShuffleList(openEntrances);
+            bool placedRoom = false;
+            foreach (var (parent, dir) in openEntrances.ToArray())
+            {
+                if (parent == start && (data.name == "Room5Data" || data.name == "Room6Data")) continue;
+
+                if (TryPlaceNextRoomAtOpenEntrance(parent, dir, data, out Room placed))
+                {
+                    placed.type = data.type;
+                    allRooms.Add(placed);
+                    openEntrances.Remove((parent, dir));
+
+                    foreach (var d in directions)
+                    {
+                        var e = placed.GetEntrance(d);
+                        if (e != null && e.gameObject.activeSelf)
+                            openEntrances.Add((placed, d));
                     }
 
-                    // Remove used parent entrance
-                    openEntrances.Remove((parent, dir));
+                    placedRoom = true;
                     break;
                 }
             }
 
             if (!placedRoom)
-                Debug.LogWarning($"Could not place normal room {roomData.name}");
+                Debug.LogWarning($"Could not place required room {roomName} due to lack of space.");
+        }
+
+        // 3. Place end room at furthest room
+        Room furthestRoom = GetFurthestRoomFromStart(start);
+        if (furthestRoom != null)
+        {
+            PlaceEndRoomAt(furthestRoom);
+            openEntrances.RemoveAll(e => e.room == furthestRoom);
+        }
+        else
+        {
+            Debug.LogWarning("No room found for end room placement!");
+        }
+
+        // 4. Place dead-ends at remaining open entrances
+        foreach (var (parent, dir) in openEntrances.ToArray())
+        {
+            RoomData dead = deadEndRooms.FirstOrDefault(d => d.prefab.GetComponent<Room>().GetEntrance(OppositeDirection(dir)) != null);
+            if (dead != null && TryPlaceNextRoomAtOpenEntrance(parent, dir, dead, out Room placed))
+            {
+                placed.type = RoomType.DeadEnd;
+                allRooms.Add(placed);
+            }
         }
 
 
-        // 3. Place End Room 
-        bool endPlaced = false;
-        ShuffleList(openEntrances);
+        // 5. Connect entrances and spawn entities
+        ConnectEntrances();
+        SpawnEntities();
+    }
 
-        foreach (var (parent, dir) in openEntrances.ToArray())
+    Room GetFurthestRoomFromStart(Room start)
+    {
+        Dictionary<Room, int> distances = new();
+        Queue<Room> queue = new();
+        queue.Enqueue(start);
+        distances[start] = 0;
+
+        Room furthest = start;
+        int maxDist = 0;
+
+        while (queue.Count > 0)
         {
-            if (parent == startRoom)
-                continue;
+            Room current = queue.Dequeue();
+            int dist = distances[current];
 
-            RoomData endData = FindFittingEndRoomAtEntrance(parent, dir);
-            if (endData != null)
+            if (dist > maxDist)
             {
-                if (TryPlaceNextRoomAtOpenEntrance(parent, dir, endData, out Room placed))
-                {
-                    allRooms.Add(placed);
-                    endPlaced = true;
+                maxDist = dist;
+                furthest = current;
+            }
 
-                    openEntrances.Remove((parent, dir));
-                    break;
+            if (roomGraph.ContainsKey(current))
+            {
+                foreach (var neighbor in roomGraph[current])
+                {
+                    if (!distances.ContainsKey(neighbor))
+                    {
+                        distances[neighbor] = dist + 1;
+                        queue.Enqueue(neighbor);
+                    }
                 }
             }
         }
 
-        if (!endPlaced)
-            Debug.LogWarning("Could not place any end room!");
-
-
-        // 4. Fill remaining open entrances with dead-ends
-        foreach (var (parent, dir) in openEntrances)
-        {
-            RoomData deadData = FindDeadEndForDirection(OppositeDirection(dir));
-            if (deadData != null)
-                TryPlaceNextRoomAtOpenEntrance(parent, dir, deadData, out _);
-        }
-
-        // 5. Connect entrances  
-        ConnectEntrances();
-
-        // 6. Spawn Player and Enemies  
-        SpawnEntities();
-
-        Debug.Log("Map generation complete!");
+        return furthest;
     }
 
-    bool CheckRoomData(RoomData data, string name)
+    void PlaceEndRoomAt(Room parent)
     {
-        if (data == null)
+        foreach (var dir in directions)
         {
-            Debug.LogError($"{name} RoomData is not assigned!");
-            return false;
+            var openEntrance = parent.GetEntrance(dir);
+            if (openEntrance == null || !openEntrance.gameObject.activeSelf) continue;
+
+            Entrance.Direction requiredDir = OppositeDirection(dir);
+            RoomData endData = endRooms.FirstOrDefault(e =>
+                (e.type == RoomType.EndUp && requiredDir == Entrance.Direction.Up) ||
+                (e.type == RoomType.EndDown && requiredDir == Entrance.Direction.Down) ||
+                (e.type == RoomType.EndLeft && requiredDir == Entrance.Direction.Left) ||
+                (e.type == RoomType.EndRight && requiredDir == Entrance.Direction.Right));
+
+            if (endData == null) continue;
+
+            Room prefab = endData.prefab.GetComponent<Room>();
+            Vector3 parentPos = openEntrance.transform.position;
+            Vector3 childLocal = prefab.GetEntrance(requiredDir).transform.localPosition;
+            Vector3 spawnPos = parentPos - childLocal;
+
+            if (!CanPlaceRoom(prefab, spawnPos)) continue;
+
+            Room endRoom = Instantiate(endData.prefab).GetComponent<Room>();
+            endRoom.type = endData.type;
+            endRoom.transform.position = spawnPos;
+            endRoom.gridPos = GetBottomLeftGridPos(endRoom, spawnPos);
+            MarkRoomCells(endRoom, endRoom.gridPos);
+            allRooms.Add(endRoom);
+
+            openEntrance.Close();
+            endRoom.GetEntrance(requiredDir)?.Close();
+
+            if (!roomGraph.ContainsKey(parent)) roomGraph[parent] = new List<Room>();
+            roomGraph[parent].Add(endRoom);
+            roomGraph[endRoom] = new List<Room> { parent };
+
+            Debug.Log($"End room placed at furthest room: {endRoom.name}");
+            break;
         }
-        if (data.prefab == null)
-        {
-            Debug.LogError($"{name} prefab inside RoomData is not assigned!");
-            return false;
-        }
-        if (data.prefab.GetComponent<Room>() == null)
-        {
-            Debug.LogError($"{name} prefab does not have a Room component!");
-            return false;
-        }
-        return true;
     }
 
-    // Main placement function  
-    bool TryPlaceNextRoomAtOpenEntrance(Room parent, Entrance.Direction parentOpenDir, RoomData roomData, out Room placed)
+    #region Core placement & Helpers
+
+    bool TryPlaceNextRoomAtOpenEntrance(Room parent, Entrance.Direction parentDir, RoomData roomData, out Room placed)
     {
         placed = null;
-        Room childPrefab = roomData.prefab.GetComponent<Room>();
-        Entrance.Direction requiredDir = OppositeDirection(parentOpenDir);
+        Room prefab = roomData.prefab.GetComponent<Room>();
+        Entrance.Direction needed = OppositeDirection(parentDir);
 
-        // Child must have matching entrance
-        if (childPrefab.GetEntrance(requiredDir) == null)
-            return false;
+        if (prefab.GetEntrance(needed) == null) return false;
 
-        Vector3 parentEntrancePos = parent.GetEntrance(parentOpenDir).transform.position;
-        Vector3 childEntranceLocal = childPrefab.GetEntrance(requiredDir).transform.localPosition;
-        Vector3 spawnPos = parentEntrancePos - childEntranceLocal;
+        Vector3 parentPos = parent.GetEntrance(parentDir).transform.position;
+        Vector3 childLocal = prefab.GetEntrance(needed).transform.localPosition;
+        Vector3 spawnPos = parentPos - childLocal;
 
-        // Check for overlaps  
-        if (!CanPlaceRoom(childPrefab, spawnPos))
-            return false;
+        if (!CanPlaceRoom(prefab, spawnPos)) return false;
 
-        // Size-aware checks  
-        if (!RoomSizeFits(childPrefab, spawnPos))
-            return false;
-
-        // Instantiate room
         Room child = Instantiate(roomData.prefab).GetComponent<Room>();
         child.transform.position = spawnPos;
         child.gridPos = GetBottomLeftGridPos(child, spawnPos);
         MarkRoomCells(child, child.gridPos);
+
+        parent.GetEntrance(parentDir)?.Close();
+        child.GetEntrance(needed)?.Close();
+
+        if (!roomGraph.ContainsKey(parent)) roomGraph[parent] = new();
+        if (!roomGraph.ContainsKey(child)) roomGraph[child] = new();
+        roomGraph[parent].Add(child);
+        roomGraph[child].Add(parent);
+
         placed = child;
-
-        // Close connected entrances
-        parent.GetEntrance(parentOpenDir)?.Close();
-        child.GetEntrance(requiredDir)?.Close();
-
         return true;
     }
 
-    // Size-aware placement logic  
-    bool RoomSizeFits(Room room, Vector3 pos)
-    {
-        Vector2Int bottomLeft = GetBottomLeftGridPos(room, pos);
+    Vector2Int GetBottomLeftGridPos(Room room, Vector3 pos) =>
+        new(Mathf.FloorToInt(pos.x - room.roomWorldSize.x / 2f), Mathf.FloorToInt(pos.y - room.roomWorldSize.y / 2f));
 
-        // Big squares: prevent overlap with other big squares
-        bool isBig = room.roomSize.x > 3 && room.roomSize.y > 3;
-        bool isHorizontalRect = room.roomSize.x > room.roomSize.y && room.roomSize.x > 2;
-        bool isVerticalRect = room.roomSize.y > room.roomSize.x && room.roomSize.y > 2;
-
-        foreach (var cell in GetOccupiedCells(room, bottomLeft))
-        {
-            if (occupiedCells.ContainsKey(cell))
-            {
-                Room existing = occupiedCells[cell];
-                if (isBig && existing.roomSize.x > 3 && existing.roomSize.y > 3)
-                    return false;
-                if (isHorizontalRect && existing.roomSize.x > existing.roomSize.y && existing.roomSize.x > 2)
-                    return false;
-                if (isVerticalRect && existing.roomSize.y > existing.roomSize.x && existing.roomSize.y > 2)
-                    return false;
-            }
-        }
-        return true;
-    }
-
-    RoomData FindFittingEndRoomAtEntrance(Room parent, Entrance.Direction parentOpenDir)
-    {
-        if (endRooms == null || endRooms.Length == 0) return null;
-        List<RoomData> shuffled = new List<RoomData>(endRooms);
-        ShuffleList(shuffled);
-
-        Entrance.Direction requiredDir = OppositeDirection(parentOpenDir);
-
-        foreach (var endData in shuffled)
-        {
-            Room r = endData.prefab.GetComponent<Room>();
-            if (r.GetEntrance(requiredDir) == null)
-                continue;
-
-            Vector3 parentEntrancePos = parent.GetEntrance(parentOpenDir).transform.position;
-            Vector3 childEntranceLocal = r.GetEntrance(requiredDir).transform.localPosition;
-            Vector3 spawnPos = parentEntrancePos - childEntranceLocal;
-            if (CanPlaceRoom(r, spawnPos) && RoomSizeFits(r, spawnPos))
-                return endData;
-        }
-
-        return null;
-    }
-
-    RoomData FindDeadEndForDirection(Entrance.Direction dir)
-    {
-        if (deadEndRooms == null || deadEndRooms.Length == 0) return null;
-
-        List<RoomData> shuffled = new List<RoomData>(deadEndRooms);
-        ShuffleList(shuffled);
-
-        foreach (var d in shuffled)
-            if (d.prefab.GetComponent<Room>().GetEntrance(dir) != null)
-                return d;
-
-        return null;
-    }
-
-    Vector2Int GetBottomLeftGridPos(Room room, Vector3 worldPos)
-    {
-        Vector2 bottomLeft = new Vector2(
-            worldPos.x - room.roomWorldSize.x / 2f,
-            worldPos.y - room.roomWorldSize.y / 2f
-        );
-        return new Vector2Int(Mathf.FloorToInt(bottomLeft.x), Mathf.FloorToInt(bottomLeft.y));
-    }
-
-    List<Vector2Int> GetOccupiedCells(Room room, Vector2Int bottomLeftGridPos)
+    List<Vector2Int> GetOccupiedCells(Room room, Vector2Int bl)
     {
         List<Vector2Int> cells = new();
         for (int x = 0; x < room.roomSize.x; x++)
             for (int y = 0; y < room.roomSize.y; y++)
-                cells.Add(bottomLeftGridPos + new Vector2Int(x, y));
+                cells.Add(bl + new Vector2Int(x, y));
         return cells;
     }
 
     bool CanPlaceRoom(Room room, Vector3 pos)
     {
-        Vector2Int bottomLeft = GetBottomLeftGridPos(room, pos);
-        foreach (var cell in GetOccupiedCells(room, bottomLeft))
-            if (occupiedCells.ContainsKey(cell))
-                return false;
+        Vector2Int bl = GetBottomLeftGridPos(room, pos);
+        foreach (var c in GetOccupiedCells(room, bl))
+            if (occupiedCells.ContainsKey(c)) return false;
         return true;
     }
 
-    void MarkRoomCells(Room room, Vector2Int bottomLeftGridPos)
+    void MarkRoomCells(Room room, Vector2Int bl)
     {
-        foreach (var cell in GetOccupiedCells(room, bottomLeftGridPos))
-            occupiedCells[cell] = room;
+        foreach (var c in GetOccupiedCells(room, bl))
+            occupiedCells[c] = room;
     }
 
-    Entrance.Direction OppositeDirection(Entrance.Direction dir)
-        => dir switch
-        {
-            Entrance.Direction.Up => Entrance.Direction.Down,
-            Entrance.Direction.Down => Entrance.Direction.Up,
-            Entrance.Direction.Left => Entrance.Direction.Right,
-            Entrance.Direction.Right => Entrance.Direction.Left,
-            _ => throw new System.Exception("Invalid direction")
-        };
-
-    Vector2Int DirectionToVector(Entrance.Direction dir)
-        => dir == Entrance.Direction.Up ? Vector2Int.up :
-           dir == Entrance.Direction.Down ? Vector2Int.down :
-           dir == Entrance.Direction.Left ? Vector2Int.left :
-           Vector2Int.right;
+    Entrance.Direction OppositeDirection(Entrance.Direction d) =>
+        d == Entrance.Direction.Up ? Entrance.Direction.Down :
+        d == Entrance.Direction.Down ? Entrance.Direction.Up :
+        d == Entrance.Direction.Left ? Entrance.Direction.Right : Entrance.Direction.Left;
 
     void ShuffleList<T>(List<T> list)
     {
@@ -321,49 +303,29 @@ public class RoomGenerator : MonoBehaviour
         }
     }
 
-    void ConnectEntrances()
-    {
-        foreach (var room in allRooms)
-        {
-            foreach (var dir in directions)
-            {
-                var entrance = room.GetEntrance(dir);
-                Vector2Int neighborPos = room.gridPos + DirectionToVector(dir);
-                if (!occupiedCells.ContainsKey(neighborPos))
-                {
-                    entrance?.Close();
-                }
-                else
-                {
-                    Room neighbor = occupiedCells[neighborPos];
-                    var neighborEntrance = neighbor.GetEntrance(OppositeDirection(dir));
-                    entrance?.Open();
-                    neighborEntrance?.Open();
-                }
-            }
-        }
-    }
+    void ConnectEntrances() { }
 
     void SpawnEntities()
     {
-        Room startRoom = allRooms[0];
-        PlayerHealth existingPlayer = Object.FindAnyObjectByType<PlayerHealth>();
-
-        if (existingPlayer != null && startRoom.playerSpawn != null)
-            existingPlayer.transform.position = startRoom.playerSpawn.position;
-        else if (playerPrefab != null && startRoom.playerSpawn != null)
-            Instantiate(playerPrefab, startRoom.playerSpawn.position, Quaternion.identity);
-
-        foreach (var room in allRooms)
+        if (allRooms.Count == 0) return;
+        Room start = allRooms[0];
+        if (playerPrefab != null && start.playerSpawn != null)
         {
-            if (enemyPrefab != null && room.enemySpawns != null)
+            var existingPlayer = FindAnyObjectByType<PlayerHealth>();
+            if (existingPlayer != null) existingPlayer.transform.position = start.playerSpawn.position;
+            else Instantiate(playerPrefab, start.playerSpawn.position, Quaternion.identity);
+        }
+
+        if (enemyPrefab != null)
+        {
+            foreach (var room in allRooms)
             {
-                foreach (var point in room.enemySpawns)
-                {
-                    if (point != null)
-                        Instantiate(enemyPrefab, point.position, Quaternion.identity);
-                }
+                if (room.enemySpawns == null) continue;
+                foreach (var spawn in room.enemySpawns)
+                    if (spawn != null) Instantiate(enemyPrefab, spawn.position, Quaternion.identity);
             }
         }
     }
+
+    #endregion
 }
