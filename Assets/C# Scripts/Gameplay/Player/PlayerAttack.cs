@@ -24,7 +24,7 @@ public class PlayerAttack_GridAnimated : MonoBehaviour
     private Animator attackAnimator;
     private SpriteRenderer attackSprite;
     private bool isAttacking = false;
-    private Vector3 lastMoveDirection = Vector3.down;
+    private Vector2 lastMoveDirection = Vector2.down;
 
     void Start()
     {
@@ -39,13 +39,9 @@ public class PlayerAttack_GridAnimated : MonoBehaviour
     void Update()
     {
         // Track last movement direction
-        if (!movementScript.IsMoving)
-        {
-            if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow)) lastMoveDirection = Vector3.up;
-            if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow)) lastMoveDirection = Vector3.down;
-            if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)) lastMoveDirection = Vector3.left;
-            if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)) lastMoveDirection = Vector3.right;
-        }
+        Vector2 inputDir = movementScript.InputDirection; // neue InputDirection aus MovementScript
+        if (inputDir != Vector2.zero)
+            lastMoveDirection = inputDir;
 
         if (Input.GetKeyDown(attackKey) && !isAttacking && attackObject != null)
         {
@@ -58,28 +54,23 @@ public class PlayerAttack_GridAnimated : MonoBehaviour
         isAttacking = true;
 
         // Calculate attack position
-        Vector3 attackPos = transform.position + lastMoveDirection.normalized * attackRange;
+        Vector3 attackPos = transform.position + new Vector3(lastMoveDirection.x, lastMoveDirection.y, 0).normalized * attackRange;
 
         // Move and rotate the attackObject to match direction
-        Vector3 visualPos = attackPos + lastMoveDirection.normalized * attackVisualOffset;
+        Vector3 visualPos = attackPos + new Vector3(lastMoveDirection.x, lastMoveDirection.y, 0).normalized * attackVisualOffset;
         attackObject.transform.position = visualPos;
 
-        if (lastMoveDirection == Vector3.right) attackObject.transform.localRotation = Quaternion.Euler(0, 0, 0);
-        else if (lastMoveDirection == Vector3.left) attackObject.transform.localRotation = Quaternion.Euler(0, 0, 180);
-        else if (lastMoveDirection == Vector3.up) attackObject.transform.localRotation = Quaternion.Euler(0, 0, 90);
-        else if (lastMoveDirection == Vector3.down) attackObject.transform.localRotation = Quaternion.Euler(0, 0, -90);
+        if (lastMoveDirection == Vector2.right) attackObject.transform.localRotation = Quaternion.Euler(0, 0, 0);
+        else if (lastMoveDirection == Vector2.left) attackObject.transform.localRotation = Quaternion.Euler(0, 0, 180);
+        else if (lastMoveDirection == Vector2.up) attackObject.transform.localRotation = Quaternion.Euler(0, 0, 90);
+        else if (lastMoveDirection == Vector2.down) attackObject.transform.localRotation = Quaternion.Euler(0, 0, -90);
 
-        // Enable attack object and play animation
         attackSprite.enabled = true;
         attackAnimator.Play("AttackAnimation", -1, 0f);
 
-        // Define hitbox size (adjust width/height as needed)
         Vector2 hitboxSize = new Vector2(width, height);
-
-        // Calculate rotation angle for OverlapBox
         float angle = Mathf.Atan2(lastMoveDirection.y, lastMoveDirection.x) * Mathf.Rad2Deg;
 
-        // Detect enemies in attack hitbox
         Collider2D[] hits = Physics2D.OverlapBoxAll(attackPos, hitboxSize, angle);
         foreach (var hit in hits)
         {
@@ -93,20 +84,17 @@ public class PlayerAttack_GridAnimated : MonoBehaviour
             }
         }
 
-        // Wait for attack animation / duration
         yield return new WaitForSeconds(attackDuration);
 
         attackSprite.enabled = false;
         isAttacking = false;
-
     }
 
     void OnDrawGizmosSelected()
     {
         if (!Application.isPlaying) return;
         Gizmos.color = Color.red;
-        Vector3 attackPos = transform.position + lastMoveDirection.normalized * attackRange;
+        Vector3 attackPos = transform.position + new Vector3(lastMoveDirection.x, lastMoveDirection.y, 0).normalized * attackRange;
         Gizmos.DrawWireSphere(attackPos, 0.2f);
     }
-
 }
