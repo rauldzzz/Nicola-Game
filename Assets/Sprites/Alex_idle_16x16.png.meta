@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: cc2e7ffc006f58e41961d20876cb5756
+guid: a38ecf16e45fc7749ac95e5b6c7ad995
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -34,7 +34,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 0
+    filterMode: 1
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -48,7 +48,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 16
+  spritePixelsToUnits: 32
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -72,7 +72,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 0
+    textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -100,10 +100,10 @@ TextureImporter:
       name: Alex_idle_16x16_0
       rect:
         serializedVersion: 2
-        x: 0
+        x: 1
         y: 0
-        width: 16
-        height: 32
+        width: 14
+        height: 22
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -112,8 +112,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 2fcd9cea824598d42bf56ee961cac70c
-      internalID: 1267164350
+      spriteID: 9f84df21187f05040bbba7ee01a17582
+      internalID: 748545924
       vertices: []
       indices: 
       edges: []
@@ -125,7 +125,7 @@ TextureImporter:
         x: 16
         y: 0
         width: 16
-        height: 32
+        height: 22
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -134,8 +134,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4c84e9919d79f2548b7e2faeeb250f8f
-      internalID: 1654324099
+      spriteID: a3d22d2fe989047499c8a3c681d748e0
+      internalID: -1357706951
       vertices: []
       indices: 
       edges: []
@@ -144,10 +144,10 @@ TextureImporter:
       name: Alex_idle_16x16_2
       rect:
         serializedVersion: 2
-        x: 32
+        x: 33
         y: 0
-        width: 16
-        height: 32
+        width: 14
+        height: 22
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -156,8 +156,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 83d8ddb69513359488bdc27709e5e61f
-      internalID: -68046383
+      spriteID: 3838f894a8fbb674baff6c97686b5c6e
+      internalID: 1022351100
       vertices: []
       indices: 
       edges: []
@@ -169,7 +169,7 @@ TextureImporter:
         x: 48
         y: 0
         width: 16
-        height: 32
+        height: 22
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -178,8 +178,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 735b3b24ecf91b54ab1491da1f5ab87a
-      internalID: 972098254
+      spriteID: 65f7fe793be82b149b0725dc49ae6550
+      internalID: -1717884444
       vertices: []
       indices: 
       edges: []
@@ -188,7 +188,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: b913e8075d5166440b09aea59623df7a
+    spriteID: dbcdfbc9eb768d845a43133ce5a7b488
     internalID: 0
     vertices: []
     indices: 
@@ -198,10 +198,10 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Alex_idle_16x16_0: 1267164350
-      Alex_idle_16x16_1: 1654324099
-      Alex_idle_16x16_2: -68046383
-      Alex_idle_16x16_3: 972098254
+      Alex_idle_16x16_0: 748545924
+      Alex_idle_16x16_1: -1357706951
+      Alex_idle_16x16_2: 1022351100
+      Alex_idle_16x16_3: -1717884444
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
