@@ -11,14 +11,20 @@ public class GridMovementHold : MonoBehaviour
     private Vector3 targetPosition;      // The next grid position the player will move to
     private bool isMoving = false;       // Is the player currently moving? Prevents overlapping moves
     private Vector3 lastPosition;        // Used to detect if the player was teleported
+    private Vector2 inputDirection;      // Current input direction
+
+    [Header("Animation")]
+    public Animator animator;
 
     public bool IsMoving => isMoving;
 
     void Start()
     {
-        // Initialize the target position as the starting position
         targetPosition = transform.position;
         lastPosition = transform.position;
+
+        if (animator == null)
+            animator = GetComponent<Animator>();
     }
 
     void Update()
@@ -26,39 +32,58 @@ public class GridMovementHold : MonoBehaviour
         // Detect if the player has been teleported (position changed externally)
         if (Vector3.Distance(transform.position, lastPosition) > gridSize * 0.1f && !isMoving)
         {
-            // Sync target position to new location 
             targetPosition = transform.position;
         }
 
         if (!isMoving)
         {
-            Vector3 inputDirection = Vector3.zero;
+            inputDirection = Vector2.zero;
 
             // Detect key input
             if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
-                inputDirection = Vector3.up;
+                inputDirection = Vector2.up;
             else if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
-                inputDirection = Vector3.down;
+                inputDirection = Vector2.down;
             else if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
-                inputDirection = Vector3.left;
+                inputDirection = Vector2.left;
             else if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
-                inputDirection = Vector3.right;
+                inputDirection = Vector2.right;
 
-            if (inputDirection != Vector3.zero)
+            if (inputDirection != Vector2.zero)
             {
-                // Check for obstacles using Physics2D
-                Vector3 nextPos = targetPosition + inputDirection * gridSize;
+                // Check for obstacles
+                Vector3 nextPos = targetPosition + new Vector3(inputDirection.x, inputDirection.y, 0) * gridSize;
                 Collider2D hit = Physics2D.OverlapCircle(nextPos, 0.2f, LayerMask.GetMask("Obstacles"));
 
                 if (hit == null)
                 {
-                    // Start moving
                     StartCoroutine(MoveToPosition(nextPos));
                 }
             }
         }
 
+        UpdateAnimator();
+
         lastPosition = transform.position;
+    }
+
+    private void UpdateAnimator()
+    {
+        // Set walking state
+        animator.SetBool("IsWalking", isMoving);
+
+        // Set direction for animations when moving
+        if (isMoving)
+        {
+            animator.SetFloat("InputX", inputDirection.x);
+            animator.SetFloat("InputY", inputDirection.y);
+        }
+        else if (inputDirection != Vector2.zero)
+        {
+            // Remember last direction when stopping
+            animator.SetFloat("LastInputX", inputDirection.x);
+            animator.SetFloat("LastInputY", inputDirection.y);
+        }
     }
 
     private IEnumerator MoveToPosition(Vector3 newPos)
