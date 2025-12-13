@@ -4,27 +4,21 @@ using System.Collections;
 public class GridMovementHold : MonoBehaviour
 {
     [Header("Grid Settings")]
-    public float gridSize = 1f;          // Size of one tile/grid cell
-    public float moveSpeed = 5f;         // Speed at which the player moves to the next tile
-    public float moveDelay = 0.15f;      // Small delay between moves when holding a key
+    public float gridSize = 1f;       // Size of one tile/grid cell
+    public float moveSpeed = 5f;      // Speed at which the player moves to the next tile
+    public float moveDelay = 0.15f;   // Small delay between moves when holding a key
 
-    private Vector3 targetPosition;      // The next grid position the player will move to
-    private bool isMoving = false;       // Is the player currently moving? Prevents overlapping moves
-    private Vector3 lastPosition;        // Used to detect if the player was teleported
-    private Vector2 inputDirection;      // Current input direction
-
-    [Header("Animation")]
-    public Animator animator;
+    private Vector3 targetPosition;   // The next grid position the player will move to
+    private bool isMoving = false;    // Is the player currently moving? Prevents overlapping moves
+    private Vector3 lastPosition;     // Used to detect if the player was teleported
 
     public bool IsMoving => isMoving;
 
     void Start()
     {
+        // Initialize the target position as the starting position
         targetPosition = transform.position;
         lastPosition = transform.position;
-
-        if (animator == null)
-            animator = GetComponent<Animator>();
     }
 
     void Update()
@@ -37,24 +31,14 @@ public class GridMovementHold : MonoBehaviour
 
         if (!isMoving)
         {
-            inputDirection = Vector2.zero;
+            Vector3 inputDirection = GetInputDirection();
 
-            // Detect key input
-            if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
-                inputDirection = Vector2.up;
-            else if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
-                inputDirection = Vector2.down;
-            else if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
-                inputDirection = Vector2.left;
-            else if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
-                inputDirection = Vector2.right;
-
-            if (inputDirection != Vector2.zero)
+            if (inputDirection != Vector3.zero)
             {
-                // Check for obstacles
-                Vector3 nextPos = targetPosition + new Vector3(inputDirection.x, inputDirection.y, 0) * gridSize;
-                Collider2D hit = Physics2D.OverlapCircle(nextPos, 0.2f, LayerMask.GetMask("Obstacles"));
+                Vector3 nextPos = targetPosition + inputDirection * gridSize;
 
+                // Check for obstacles using Physics2D
+                Collider2D hit = Physics2D.OverlapCircle(nextPos, 0.2f, LayerMask.GetMask("Obstacles"));
                 if (hit == null)
                 {
                     StartCoroutine(MoveToPosition(nextPos));
@@ -62,28 +46,18 @@ public class GridMovementHold : MonoBehaviour
             }
         }
 
-        UpdateAnimator();
-
         lastPosition = transform.position;
     }
 
-    private void UpdateAnimator()
+    // Helper method to get input direction
+    private Vector3 GetInputDirection()
     {
-        // Set walking state
-        animator.SetBool("IsWalking", isMoving);
+        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow)) return Vector3.up;
+        if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow)) return Vector3.down;
+        if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)) return Vector3.left;
+        if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)) return Vector3.right;
 
-        // Set direction for animations when moving
-        if (isMoving)
-        {
-            animator.SetFloat("InputX", inputDirection.x);
-            animator.SetFloat("InputY", inputDirection.y);
-        }
-        else if (inputDirection != Vector2.zero)
-        {
-            // Remember last direction when stopping
-            animator.SetFloat("LastInputX", inputDirection.x);
-            animator.SetFloat("LastInputY", inputDirection.y);
-        }
+        return Vector3.zero;
     }
 
     private IEnumerator MoveToPosition(Vector3 newPos)
