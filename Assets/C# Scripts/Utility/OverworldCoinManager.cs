@@ -19,6 +19,12 @@ public class OverworldCoinManager : MonoBehaviour
 
     private void OnEnable()
     {
+        if (coinText == null)
+        {
+            // Esto ayudará a ver si realmente olvidaste la asignación
+            Debug.LogError("ERROR CRÍTICO: coinText no está asignado en el Inspector en el OverworldCoinManager.");
+            return;
+        }
         // Update UI whenever the overworld scene loads
         UpdateUI();
     }
