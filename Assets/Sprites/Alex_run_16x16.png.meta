@@ -100,12 +100,12 @@ TextureImporter:
       name: Alex_run_16x16_0
       rect:
         serializedVersion: 2
-        x: 0
+        x: 1
         y: 0
-        width: 16
-        height: 32
+        width: 14
+        height: 23
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -122,12 +122,12 @@ TextureImporter:
       name: Alex_run_16x16_1
       rect:
         serializedVersion: 2
-        x: 16
+        x: 17
         y: 0
-        width: 16
-        height: 32
+        width: 14
+        height: 23
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -144,12 +144,12 @@ TextureImporter:
       name: Alex_run_16x16_2
       rect:
         serializedVersion: 2
-        x: 32
+        x: 33
         y: 0
-        width: 16
-        height: 32
+        width: 14
+        height: 23
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -166,12 +166,12 @@ TextureImporter:
       name: Alex_run_16x16_3
       rect:
         serializedVersion: 2
-        x: 48
+        x: 49
         y: 0
-        width: 16
-        height: 32
+        width: 14
+        height: 23
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -188,12 +188,12 @@ TextureImporter:
       name: Alex_run_16x16_4
       rect:
         serializedVersion: 2
-        x: 64
+        x: 65
         y: 0
-        width: 16
-        height: 32
+        width: 14
+        height: 23
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -210,12 +210,12 @@ TextureImporter:
       name: Alex_run_16x16_5
       rect:
         serializedVersion: 2
-        x: 80
+        x: 81
         y: 0
-        width: 16
-        height: 32
+        width: 14
+        height: 23
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -234,10 +234,10 @@ TextureImporter:
         serializedVersion: 2
         x: 96
         y: 0
-        width: 16
-        height: 32
+        width: 15
+        height: 23
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -257,9 +257,9 @@ TextureImporter:
         x: 112
         y: 0
         width: 16
-        height: 32
+        height: 23
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -278,10 +278,10 @@ TextureImporter:
         serializedVersion: 2
         x: 128
         y: 0
-        width: 16
-        height: 32
+        width: 15
+        height: 23
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -298,12 +298,12 @@ TextureImporter:
       name: Alex_run_16x16_9
       rect:
         serializedVersion: 2
-        x: 144
+        x: 145
         y: 0
-        width: 16
-        height: 32
+        width: 15
+        height: 23
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -323,9 +323,9 @@ TextureImporter:
         x: 160
         y: 0
         width: 16
-        height: 32
+        height: 23
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -342,12 +342,12 @@ TextureImporter:
       name: Alex_run_16x16_11
       rect:
         serializedVersion: 2
-        x: 176
+        x: 177
         y: 0
-        width: 16
-        height: 32
+        width: 15
+        height: 23
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -364,12 +364,12 @@ TextureImporter:
       name: Alex_run_16x16_12
       rect:
         serializedVersion: 2
-        x: 192
+        x: 193
         y: 0
-        width: 16
-        height: 32
+        width: 14
+        height: 23
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -386,12 +386,12 @@ TextureImporter:
       name: Alex_run_16x16_13
       rect:
         serializedVersion: 2
-        x: 208
+        x: 209
         y: 0
-        width: 16
-        height: 32
+        width: 14
+        height: 23
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -408,12 +408,12 @@ TextureImporter:
       name: Alex_run_16x16_14
       rect:
         serializedVersion: 2
-        x: 224
+        x: 225
         y: 0
-        width: 16
-        height: 32
+        width: 14
+        height: 23
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -430,12 +430,12 @@ TextureImporter:
       name: Alex_run_16x16_15
       rect:
         serializedVersion: 2
-        x: 240
+        x: 241
         y: 0
-        width: 16
-        height: 32
+        width: 14
+        height: 23
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -452,12 +452,12 @@ TextureImporter:
       name: Alex_run_16x16_16
       rect:
         serializedVersion: 2
-        x: 256
+        x: 257
         y: 0
-        width: 16
-        height: 32
+        width: 14
+        height: 23
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -474,12 +474,12 @@ TextureImporter:
       name: Alex_run_16x16_17
       rect:
         serializedVersion: 2
-        x: 272
+        x: 273
         y: 0
-        width: 16
-        height: 32
+        width: 14
+        height: 23
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -496,12 +496,12 @@ TextureImporter:
       name: Alex_run_16x16_18
       rect:
         serializedVersion: 2
-        x: 288
+        x: 289
         y: 0
-        width: 16
-        height: 32
+        width: 15
+        height: 23
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -518,12 +518,12 @@ TextureImporter:
       name: Alex_run_16x16_19
       rect:
         serializedVersion: 2
-        x: 304
+        x: 305
         y: 0
-        width: 16
-        height: 32
+        width: 15
+        height: 23
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -540,12 +540,12 @@ TextureImporter:
       name: Alex_run_16x16_20
       rect:
         serializedVersion: 2
-        x: 320
+        x: 321
         y: 0
-        width: 16
-        height: 32
+        width: 15
+        height: 23
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -562,12 +562,12 @@ TextureImporter:
       name: Alex_run_16x16_21
       rect:
         serializedVersion: 2
-        x: 336
+        x: 352
         y: 0
-        width: 16
-        height: 32
+        width: 15
+        height: 23
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -584,12 +584,12 @@ TextureImporter:
       name: Alex_run_16x16_22
       rect:
         serializedVersion: 2
-        x: 352
+        x: 368
         y: 0
-        width: 16
-        height: 32
+        width: 15
+        height: 23
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -606,20 +606,20 @@ TextureImporter:
       name: Alex_run_16x16_23
       rect:
         serializedVersion: 2
-        x: 368
+        x: 337
         y: 0
-        width: 16
-        height: 32
+        width: 14
+        height: 23
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: b0f78044b07e4bf4288cd03487153773
-      internalID: -1211512250
+      spriteID: f2cfe39a178ece0449cbc981f43d9fe4
+      internalID: 213688489
       vertices: []
       indices: 
       edges: []
@@ -654,7 +654,7 @@ TextureImporter:
       Alex_run_16x16_20: -1147425468
       Alex_run_16x16_21: -214988078
       Alex_run_16x16_22: 1988205936
-      Alex_run_16x16_23: -1211512250
+      Alex_run_16x16_23: 213688489
       Alex_run_16x16_3: 912141613
       Alex_run_16x16_4: 351374100
       Alex_run_16x16_5: -2068740769
