@@ -9,14 +9,14 @@ EditorBuildSettings:
     path: Assets/Scenes/StartScene.unity
     guid: 5ee6c39a3022f504e913dfb96f33efd8
   - enabled: 1
-    path: Assets/Scenes/OWTest.unity
-    guid: 3b9add6cd86f764408b36c7d55abc056
+    path: Assets/Scenes/OverworldScene.unity
+    guid: 99c9720ab356a0642a771bea13969a05
   - enabled: 1
     path: Assets/Scenes/2dPlatformerScene.unity
     guid: d18c5ca2aada3c24996e768986518cbc
   - enabled: 1
-    path: Assets/Scenes/OverworldScene.unity
-    guid: 99c9720ab356a0642a771bea13969a05
+    path: Assets/Scenes/OWTest.unity
+    guid: 3b9add6cd86f764408b36c7d55abc056
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
