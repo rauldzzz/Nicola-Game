@@ -7,39 +7,39 @@ public class InteractionDetector : MonoBehaviour
     public GameObject interactionIcon;
 
     [Header("Interaction Settings")]
-    public KeyCode interactionKey = KeyCode.E; // Key to press for interaction
+    public KeyCode interactionKey = KeyCode.E; // The key to press for interaction
 
-    private GridMovementHold playerMovement;
+    private PlayerMovement playerMovement;
+    private Animator playerAnimator;
 
     void Start()
     {
-        // Find the player and get its movement script
-        playerMovement = GameObject.FindGameObjectWithTag("Player")?.GetComponent<GridMovementHold>();
-        
-        if (interactionIcon != null)
-            interactionIcon.SetActive(false);
+        playerMovement = GameObject.FindGameObjectWithTag("Player")?.GetComponent<PlayerMovement>();
+        playerAnimator = GetComponent<Animator>();
+        interactionIcon.SetActive(false);
     }
 
     void Update()
     {
-        if (interactableInRange != null)
+        // Only allow interaction if player is in range and NOT moving
+        bool isMoving = playerAnimator != null && playerAnimator.GetBool("IsWalking");
+        if (interactableInRange != null && !isMoving)
         {
-            // Show or hide the interaction icon depending on player movement
-            if (interactionIcon != null)
-                interactionIcon.SetActive(!playerMovement.isMoving);
-
-            // Only allow interaction if the player is not moving
-            if ((playerMovement == null || !playerMovement.isMoving) && Input.GetKeyDown(interactionKey))
-            {
+            if (Input.GetKeyDown(interactionKey))
                 interactableInRange.Interact();
-            }
         }
+        if (interactableInRange != null && interactionIcon != null)
+        {
+            interactionIcon.SetActive(!isMoving);
+        }
+
     }
 
-    // Optional Input System method
-    public void OnInteract(InputAction.CallbackContext context)
+
+    public void Oninteract(InputAction.CallbackContext context)
     {
-        if (context.performed && interactableInRange != null && (playerMovement == null || !playerMovement.isMoving))
+        bool isMoving = playerAnimator != null && playerAnimator.GetBool("IsWalking");
+        if (context.performed && interactableInRange != null && !isMoving)
         {
             interactableInRange.Interact();
         }
@@ -47,29 +47,22 @@ public class InteractionDetector : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        // Detect interactables in range
         if (collision.TryGetComponent(out IInteractable interactable) && interactable.CanInteract())
         {
             interactableInRange = interactable;
-
-            if (interactionIcon != null)
-                interactionIcon.SetActive(!playerMovement.isMoving);
+            interactionIcon.SetActive(true);
         }
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        // Clear interactable reference when leaving
         if (collision.TryGetComponent(out IInteractable interactable) && interactable == interactableInRange)
         {
-            // End dialogue if leaving an NPC
             if (interactable is NPC npc)
                 npc.EndDialogue();
 
             interactableInRange = null;
-
-            if (interactionIcon != null)
-                interactionIcon.SetActive(false);
+            interactionIcon.SetActive(false);
         }
     }
 }

@@ -18,19 +18,9 @@ public class PlayerHealthUI : MonoBehaviour
     {
         if (playerHealth == null)
         {
-            // Try to find the player automatically
-            GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
-            if (playerObj != null)
-            {
-                playerHealth = playerObj.GetComponent<PlayerHealth>();
-            }
-            else
-            {
-                Debug.LogError("PlayerHealthUI could not find Player in scene!");
-            }
+            Debug.LogError("PlayerHealth not assigned in PlayerHealthUI!");
         }
     }
-
 
     void Update()
     {

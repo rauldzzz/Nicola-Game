@@ -60,7 +60,7 @@ public class Door : MonoBehaviour, IInteractable
         isTeleporting = true;
 
         // Freeze player movement
-        GridMovementHold playerMovement = GameObject.FindGameObjectWithTag("Player")?.GetComponent<GridMovementHold>();
+        GridMovementHold_Commented playerMovement = GameObject.FindGameObjectWithTag("Player")?.GetComponent<GridMovementHold_Commented>();
         if (playerMovement != null)
             playerMovement.enabled = false;
 

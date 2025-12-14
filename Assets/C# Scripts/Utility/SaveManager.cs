@@ -70,7 +70,7 @@ public class SaveManager : MonoBehaviour
 
 
         // Find player and start movement lock coroutine
-        GridMovementHold playerMovement = GameObject.FindGameObjectWithTag("Player")?.GetComponent<GridMovementHold>();
+        GridMovementHold_Commented playerMovement = GameObject.FindGameObjectWithTag("Player")?.GetComponent<GridMovementHold_Commented>();
         if (playerMovement != null)
         {
             playerMovement.StartCoroutine(LockMovementCoroutine(playerMovement, lockDuration));
@@ -84,7 +84,7 @@ public class SaveManager : MonoBehaviour
     /// <summary>
     /// Coroutine to temporarily disable movement
     /// </summary>
-    private IEnumerator LockMovementCoroutine(GridMovementHold movement, float duration)
+    private IEnumerator LockMovementCoroutine(GridMovementHold_Commented movement, float duration)
     {
         movement.enabled = false;
         yield return new WaitForSeconds(duration);
