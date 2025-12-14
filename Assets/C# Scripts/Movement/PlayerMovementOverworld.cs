@@ -1,140 +1,108 @@
 using UnityEngine;
+using UnityEngine.Tilemaps;
 using System.Collections;
 
-public class GridMovementHold : MonoBehaviour
+public class GridMovementHold_Commented : MonoBehaviour
 {
     [Header("Grid Settings")]
-    public float gridSize = 1f;              // Size of one grid tile
-    public float moveSpeed = 5f;             // Movement speed between tiles
+    public float gridSize = 1f;          // Size of one tile/grid cell
+    public float moveSpeed = 5f;         // Speed at which the player moves to the next tile
+    public float moveDelay = 0.15f;      // Small delay between moves when holding a key
 
-    // Distance before reaching the target where new input is accepted
-    public float inputBufferDistance = 0.5f;
+    [Header("Tilemaps")]
+    public Tilemap obstacleTilemap;      // Reference to the tilemap that contains obstacles
 
-    private Vector3 targetPosition;          // Current target grid position
-    public bool isMoving = false;             // Is the player currently moving
-    private Vector2 inputDirection;           // Current movement direction
-    private Vector2 lastMoveDirection = Vector2.down; // Last direction used (for idle)
+    private Vector3 targetPosition;      // The next grid position the player will move to
+    private bool isMoving = false;       // Is the player currently moving? Prevents overlapping moves
+    private Vector3 lastPosition;        // Used to detect if the player was teleported
 
-    [Header("Animation")]
-    public Animator animator;
-
-    // Expose movement direction for other scripts (attack, interaction, etc.)
-    public Vector2 InputDirection => inputDirection;
+    public bool IsMoving => isMoving;
 
     void Start()
     {
-        if (animator == null)
-            animator = GetComponent<Animator>();
-
-        // Snap the player to the nearest grid position on start
-        float snappedX = Mathf.Round(transform.position.x / gridSize) * gridSize;
-        float snappedY = Mathf.Round(transform.position.y / gridSize) * gridSize;
-
-        Vector3 snappedPosition = new Vector3(snappedX, snappedY, transform.position.z);
-
-        transform.position = snappedPosition;
-        targetPosition = snappedPosition;
+        // Initialize the target position as the starting position
+        targetPosition = transform.position;
+        lastPosition = transform.position;
     }
 
     void Update()
     {
-        // Read continuous movement input
-        Vector2 currentInput = Vector2.zero;
-        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow)) currentInput = Vector2.up;
-        else if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow)) currentInput = Vector2.down;
-        else if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)) currentInput = Vector2.left;
-        else if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)) currentInput = Vector2.right;
-
-        if (currentInput != Vector2.zero)
+        // Detect if the player has been teleported (position changed externally)
+        if (Vector3.Distance(transform.position, lastPosition) > gridSize * 0.1f && !isMoving)
         {
-            // Check how close we are to the current target tile
-            float distToTarget = Vector3.Distance(transform.position, targetPosition);
-            bool nearTarget = distToTarget <= inputBufferDistance;
+            // Sync target position to new location
+            targetPosition = transform.position;
+        }
 
-            // Allow new movement if stopped or almost at the target
-            if (!isMoving || nearTarget)
+        // Only check for input if the player is not currently moving
+        if (!isMoving)
+        {
+            Vector3 inputDirection = Vector3.zero; // Direction we want to move in this frame
+
+            // Check which key is being held down
+            if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
+                inputDirection = Vector3.up;
+            else if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
+                inputDirection = Vector3.down;
+            else if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
+                inputDirection = Vector3.left;
+            else if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
+                inputDirection = Vector3.right;
+
+            if (inputDirection != Vector3.zero)
             {
-                // Prevent repeating the same move unnecessarily
-                if (currentInput != inputDirection || !isMoving)
+                // Convert the next position into a cell coordinate on the obstacle tilemap
+                Vector3Int nextCell = obstacleTilemap.WorldToCell(targetPosition + inputDirection * gridSize);
+
+                // Only move if there is NO obstacle tile in the target cell
+                if (!obstacleTilemap.HasTile(nextCell))
                 {
-                    TryMove(currentInput);
+                    Vector3 newPos = targetPosition + inputDirection * gridSize;
+
+                    // Round new position to the nearest 0.5 to stay aligned with grid
+                    newPos = RoundToHalf(newPos);
+
+                    // Start the coroutine to move the player smoothly to the next tile
+                    StartCoroutine(MoveToPosition(newPos));
                 }
             }
         }
 
-        UpdateAnimator(currentInput);
-    }
-
-    private void TryMove(Vector2 dir)
-    {
-        // Calculate the next grid position
-        Vector3 nextPos = targetPosition + new Vector3(dir.x, dir.y, 0) * gridSize;
-
-        // Check if the target tile is blocked
-        Collider2D hit = Physics2D.OverlapCircle(nextPos, 0.2f, LayerMask.GetMask("Obstacles"));
-
-        if (hit == null)
-        {
-            // Stop current movement to allow smooth direction changes
-            if (isMoving)
-                StopAllCoroutines();
-
-            // Store movement direction
-            inputDirection = dir;
-            lastMoveDirection = dir;
-            targetPosition = nextPos;
-
-            // Start moving towards the new tile
-            StartCoroutine(MoveToPosition(nextPos));
-        }
+        // Update last position tracker
+        lastPosition = transform.position;
     }
 
     private IEnumerator MoveToPosition(Vector3 newPos)
     {
+        // Set the moving flag so no new input is processed until movement finishes
         isMoving = true;
 
-        // Smoothly move toward the target tile
+        // Move the player smoothly to the target position over time
         while (Vector3.Distance(transform.position, newPos) > 0.01f)
         {
-            transform.position = Vector3.MoveTowards(
-                transform.position,
-                newPos,
-                moveSpeed * Time.deltaTime
-            );
-            yield return null;
+            transform.position = Vector3.MoveTowards(transform.position, newPos, moveSpeed * Time.deltaTime);
+            yield return null; // Wait until next frame
         }
 
-        // Snap exactly to grid
+        // Snap exactly to the target position
         transform.position = newPos;
+
+        // Update targetPosition so the next movement starts from here
+        targetPosition = newPos;
+
+        // Reset moving flag to allow next input
         isMoving = false;
 
-        // Immediately check for held input to continue moving
-        Vector2 currentInput = Vector2.zero;
-        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow)) currentInput = Vector2.up;
-        else if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow)) currentInput = Vector2.down;
-        else if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)) currentInput = Vector2.left;
-        else if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)) currentInput = Vector2.right;
-
-        if (currentInput != Vector2.zero)
-            TryMove(currentInput);
+        // Small delay before allowing the next move to make holding keys feel natural
+        yield return new WaitForSeconds(moveDelay);
     }
 
-    private void UpdateAnimator(Vector2 currentInput)
+    // Helper function: rounds each component to the nearest 0.5
+    private Vector3 RoundToHalf(Vector3 pos)
     {
-        // Set walking state
-        animator.SetBool("IsWalking", isMoving);
-
-        if (isMoving)
-        {
-            // Update movement direction while walking
-            animator.SetFloat("InputX", inputDirection.x);
-            animator.SetFloat("InputY", inputDirection.y);
-        }
-        else
-        {
-            // Use last movement direction for idle animations
-            animator.SetFloat("LastInputX", lastMoveDirection.x);
-            animator.SetFloat("LastInputY", lastMoveDirection.y);
-        }
+        pos.x = Mathf.Round(pos.x * 2f) / 2f;
+        pos.y = Mathf.Round(pos.y * 2f) / 2f;
+        pos.z = Mathf.Round(pos.z * 2f) / 2f;
+        return pos;
     }
 }
