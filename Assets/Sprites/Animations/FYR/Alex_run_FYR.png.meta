@@ -48,7 +48,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 16
+  spritePixelsToUnits: 32
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -72,7 +72,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 0
+    textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -97,529 +97,529 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Alex_run_16x16_0
+      name: Alex_run_FYR_0
       rect:
         serializedVersion: 2
-        x: 0
+        x: 1
         y: 0
-        width: 16
-        height: 32
+        width: 14
+        height: 22
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 310ec52f492cb1547a7261df4c1761c9
-      internalID: -1171690012
+      spriteID: 5cfaa215ae1d61640a469fa2f2f8e1ee
+      internalID: -249177172
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Alex_run_16x16_1
+      name: Alex_run_FYR_1
       rect:
         serializedVersion: 2
-        x: 16
-        y: 0
-        width: 16
-        height: 32
+        x: 17
+        y: 1
+        width: 14
+        height: 22
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 39940515dc58c6148af76fa6a60c3cf4
-      internalID: 1136399608
+      spriteID: de7fd45a3df25344da4efe71d9e42910
+      internalID: -1729956050
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Alex_run_16x16_2
+      name: Alex_run_FYR_2
       rect:
         serializedVersion: 2
-        x: 32
+        x: 33
         y: 0
-        width: 16
-        height: 32
+        width: 14
+        height: 22
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: dbc84a1def492574f8a6391fd4db4231
-      internalID: 2007985513
+      spriteID: 7868a70c86813a84aaf0bf9065635c34
+      internalID: 260517967
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Alex_run_16x16_3
+      name: Alex_run_FYR_3
       rect:
         serializedVersion: 2
-        x: 48
+        x: 49
         y: 0
-        width: 16
-        height: 32
+        width: 14
+        height: 22
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 2cb2d2c5316561d4384c665539a09df5
-      internalID: 912141613
+      spriteID: 07196786818772a48b00b52498b61795
+      internalID: -390517767
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Alex_run_16x16_4
+      name: Alex_run_FYR_4
       rect:
         serializedVersion: 2
-        x: 64
-        y: 0
-        width: 16
-        height: 32
+        x: 65
+        y: 1
+        width: 14
+        height: 22
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 3801e1ac0888a274289a66f21b0c9a7f
-      internalID: 351374100
+      spriteID: 793b0c4472c83e44db196811cf6f1106
+      internalID: -1065409583
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Alex_run_16x16_5
+      name: Alex_run_FYR_5
       rect:
         serializedVersion: 2
-        x: 80
+        x: 81
         y: 0
-        width: 16
-        height: 32
+        width: 14
+        height: 22
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4d6887a26dc0c1d44815292b9c33d52c
-      internalID: -2068740769
+      spriteID: 336081c6ffed5b44a934bdb01b2df8b7
+      internalID: 163412635
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Alex_run_16x16_6
+      name: Alex_run_FYR_6
       rect:
         serializedVersion: 2
         x: 96
         y: 0
         width: 16
-        height: 32
+        height: 23
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: cabc0d4d884379a4daf674efa867c7ef
-      internalID: -1799733889
+      spriteID: ea28ff48b6369e744964f085728fde02
+      internalID: -257174130
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Alex_run_16x16_7
+      name: Alex_run_FYR_7
       rect:
         serializedVersion: 2
         x: 112
         y: 0
         width: 16
-        height: 32
+        height: 23
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1b770997d17ae0d4d8faab52a989742b
-      internalID: 1313121939
+      spriteID: 7324c926393970e45b5f1b6083d3f368
+      internalID: -936712367
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Alex_run_16x16_8
+      name: Alex_run_FYR_8
       rect:
         serializedVersion: 2
         x: 128
         y: 0
         width: 16
-        height: 32
+        height: 23
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1237b1f5a40dd074eb7eb19aaca1ca3b
-      internalID: -1333854453
+      spriteID: a2fad964b222d0145bd0645c0a4104e3
+      internalID: 1676301792
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Alex_run_16x16_9
+      name: Alex_run_FYR_9
       rect:
         serializedVersion: 2
         x: 144
         y: 0
         width: 16
-        height: 32
+        height: 23
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 3545c8fda3e93dd46855e796d2af8b96
-      internalID: 1767856078
+      spriteID: d904374aa9ae2fa45af6f03c7a205872
+      internalID: 1506738077
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Alex_run_16x16_10
+      name: Alex_run_FYR_10
       rect:
         serializedVersion: 2
         x: 160
         y: 0
         width: 16
-        height: 32
+        height: 23
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 6e828f81fc662844288decaca7fa9c72
-      internalID: -1396204071
+      spriteID: c3c41f9bfeaabbf43a70434774ab69c5
+      internalID: 355775507
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Alex_run_16x16_11
+      name: Alex_run_FYR_11
       rect:
         serializedVersion: 2
         x: 176
         y: 0
         width: 16
-        height: 32
+        height: 23
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a6263762c4a668b4b83b7a5f3bc3820d
-      internalID: -976834038
+      spriteID: 3bef95986d69fdc4b88ce6b71600f243
+      internalID: -1589359121
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Alex_run_16x16_12
+      name: Alex_run_FYR_12
       rect:
         serializedVersion: 2
-        x: 192
+        x: 193
         y: 0
-        width: 16
-        height: 32
+        width: 14
+        height: 22
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 0919e260432b812428657943b3aee677
-      internalID: -170972763
+      spriteID: 6ab01cd496f89ae4fa4edc52d5a6a557
+      internalID: -1510264135
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Alex_run_16x16_13
+      name: Alex_run_FYR_13
       rect:
         serializedVersion: 2
-        x: 208
-        y: 0
-        width: 16
-        height: 32
+        x: 209
+        y: 1
+        width: 14
+        height: 22
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 545a507a07a0d884487938dba905e31f
-      internalID: -1552641921
+      spriteID: 48834a1a5c748bb49acfe1c06457d66d
+      internalID: -733621566
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Alex_run_16x16_14
+      name: Alex_run_FYR_14
       rect:
         serializedVersion: 2
-        x: 224
+        x: 225
         y: 0
-        width: 16
-        height: 32
+        width: 14
+        height: 22
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: b359e4c025890d14599fdb508d2525d0
-      internalID: -699347852
+      spriteID: 5770def103b79c84b8eaad6d3e0dfb61
+      internalID: -1878354579
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Alex_run_16x16_15
+      name: Alex_run_FYR_15
       rect:
         serializedVersion: 2
-        x: 240
+        x: 241
         y: 0
-        width: 16
-        height: 32
+        width: 14
+        height: 22
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: b90c66be3d683d84780aca13d2243066
-      internalID: -656770702
+      spriteID: 522b3475e31da6745a7a042474680733
+      internalID: -1267693255
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Alex_run_16x16_16
+      name: Alex_run_FYR_16
       rect:
         serializedVersion: 2
-        x: 256
-        y: 0
-        width: 16
-        height: 32
+        x: 257
+        y: 1
+        width: 14
+        height: 22
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1860ac924d990b547869aa0801a7629e
-      internalID: 1232944650
+      spriteID: 14fbc78ac3213144bbf290eafb983231
+      internalID: -1808283663
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Alex_run_16x16_17
+      name: Alex_run_FYR_17
       rect:
         serializedVersion: 2
-        x: 272
+        x: 273
         y: 0
-        width: 16
-        height: 32
+        width: 14
+        height: 22
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 55f7e04fc36b52c419befe2a0cdcf9e8
-      internalID: -148253448
+      spriteID: adef3006dc656c1468ce309f3daaeae5
+      internalID: -1961918462
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Alex_run_16x16_18
+      name: Alex_run_FYR_18
       rect:
         serializedVersion: 2
-        x: 288
-        y: 0
-        width: 16
-        height: 32
+        x: 289
+        y: 1
+        width: 15
+        height: 22
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 5f134a59922f7124f93aa693c8571bbc
-      internalID: 350028599
+      spriteID: 9babff2c14ec1dd4bb3bf4a5f6c64a22
+      internalID: -1220439604
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Alex_run_16x16_19
+      name: Alex_run_FYR_19
       rect:
         serializedVersion: 2
-        x: 304
+        x: 305
         y: 0
-        width: 16
-        height: 32
+        width: 15
+        height: 22
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ff5d33259cddceb45ac2f415ea8dc4b9
-      internalID: 974684869
+      spriteID: fbb58f4dfcabcac499e3ed2ad8b80889
+      internalID: -2085684388
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Alex_run_16x16_20
+      name: Alex_run_FYR_20
       rect:
         serializedVersion: 2
-        x: 320
-        y: 0
-        width: 16
-        height: 32
+        x: 321
+        y: 1
+        width: 15
+        height: 22
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 5fb8a5db882640144835a20296ee488e
-      internalID: -1147425468
+      spriteID: 2735e15c32ad9ac489144909962dee4d
+      internalID: -1332119936
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Alex_run_16x16_21
-      rect:
-        serializedVersion: 2
-        x: 336
-        y: 0
-        width: 16
-        height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 02e75bc4ebd55934b9287eabb2cfbe9e
-      internalID: -214988078
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Alex_run_16x16_22
+      name: Alex_run_FYR_21
       rect:
         serializedVersion: 2
         x: 352
         y: 0
-        width: 16
-        height: 32
+        width: 15
+        height: 22
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 9db1f1b908045e2448d4920017bbb174
-      internalID: 1988205936
+      spriteID: becb64f5b9569da4681a2506ce19e421
+      internalID: 682826134
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Alex_run_16x16_23
+      name: Alex_run_FYR_22
       rect:
         serializedVersion: 2
         x: 368
-        y: 0
-        width: 16
-        height: 32
+        y: 1
+        width: 15
+        height: 22
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: b0f78044b07e4bf4288cd03487153773
-      internalID: -1211512250
+      spriteID: ebcc1e84a8cd88f4b84b9c16cfb7ed76
+      internalID: -1036600777
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Alex_run_FYR_23
+      rect:
+        serializedVersion: 2
+        x: 336
+        y: 0
+        width: 15
+        height: 23
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3b1112fc1511a5c40bf2c7f805107cf3
+      internalID: -246991114
       vertices: []
       indices: 
       edges: []
@@ -638,30 +638,30 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Alex_run_16x16_0: -1171690012
-      Alex_run_16x16_1: 1136399608
-      Alex_run_16x16_10: -1396204071
-      Alex_run_16x16_11: -976834038
-      Alex_run_16x16_12: -170972763
-      Alex_run_16x16_13: -1552641921
-      Alex_run_16x16_14: -699347852
-      Alex_run_16x16_15: -656770702
-      Alex_run_16x16_16: 1232944650
-      Alex_run_16x16_17: -148253448
-      Alex_run_16x16_18: 350028599
-      Alex_run_16x16_19: 974684869
-      Alex_run_16x16_2: 2007985513
-      Alex_run_16x16_20: -1147425468
-      Alex_run_16x16_21: -214988078
-      Alex_run_16x16_22: 1988205936
-      Alex_run_16x16_23: -1211512250
-      Alex_run_16x16_3: 912141613
-      Alex_run_16x16_4: 351374100
-      Alex_run_16x16_5: -2068740769
-      Alex_run_16x16_6: -1799733889
-      Alex_run_16x16_7: 1313121939
-      Alex_run_16x16_8: -1333854453
-      Alex_run_16x16_9: 1767856078
+      Alex_run_FYR_0: -249177172
+      Alex_run_FYR_1: -1729956050
+      Alex_run_FYR_10: 355775507
+      Alex_run_FYR_11: -1589359121
+      Alex_run_FYR_12: -1510264135
+      Alex_run_FYR_13: -733621566
+      Alex_run_FYR_14: -1878354579
+      Alex_run_FYR_15: -1267693255
+      Alex_run_FYR_16: -1808283663
+      Alex_run_FYR_17: -1961918462
+      Alex_run_FYR_18: -1220439604
+      Alex_run_FYR_19: -2085684388
+      Alex_run_FYR_2: 260517967
+      Alex_run_FYR_20: -1332119936
+      Alex_run_FYR_21: 682826134
+      Alex_run_FYR_22: -1036600777
+      Alex_run_FYR_23: -246991114
+      Alex_run_FYR_3: -390517767
+      Alex_run_FYR_4: -1065409583
+      Alex_run_FYR_5: 163412635
+      Alex_run_FYR_6: -257174130
+      Alex_run_FYR_7: -936712367
+      Alex_run_FYR_8: 1676301792
+      Alex_run_FYR_9: 1506738077
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
