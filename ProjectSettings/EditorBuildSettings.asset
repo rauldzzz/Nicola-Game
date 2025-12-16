@@ -12,9 +12,15 @@ EditorBuildSettings:
     path: Assets/Scenes/OverworldScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
   - enabled: 1
+    path: Assets/Scenes/FYR_Minigame.unity
+    guid: ba54900be20f99045b91140890cb3dfe
+  - enabled: 1
+    path: Assets/Scenes/RhythmGame.unity
+    guid: 94b79da3c2545a14784e72d37fd8fb0f
+  - enabled: 0
     path: Assets/Scenes/2dPlatformerScene.unity
     guid: d18c5ca2aada3c24996e768986518cbc
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/OWTest.unity
     guid: 3b9add6cd86f764408b36c7d55abc056
   m_configObjects:

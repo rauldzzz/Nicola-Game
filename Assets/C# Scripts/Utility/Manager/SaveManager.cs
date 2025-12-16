@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -15,17 +14,17 @@ public class SaveManager : MonoBehaviour
     public Vector3 overworldPlayerPosition; // Last saved overworld position
 
     [Header("Level Progress")]
-    public string lastVisitedLevel = ""; // Name of the last visited level
-    public HashSet<string> completedLevels = new HashSet<string>(); // Tracks completed levels
+    public string lastVisitedLevel = "";
+    public HashSet<string> completedLevels = new HashSet<string>();
 
     [Header("Coins")]
-    public int totalCoins = 0; // Total coins across all levels
+    public int totalCoins = 0;
 
     [Header("Keys")]
-    public HashSet<string> collectedKeys = new HashSet<string>(); // Tracks collected keys across levels
+    public HashSet<string> collectedKeys = new HashSet<string>();
 
     [Header("Overworld Interactions")]
-    public HashSet<string> interactions = new HashSet<string>(); // Example: doors unlocked, NPCs talked to
+    public HashSet<string> interactions = new HashSet<string>();
 
     private void Awake()
     {
@@ -35,15 +34,13 @@ public class SaveManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
+
         Instance = this;
         DontDestroyOnLoad(gameObject);
     }
 
     #region Level Methods
 
-    /// <summary>
-    /// Mark a level as completed
-    /// </summary>
     public void CompleteLevel(string levelName)
     {
         if (!completedLevels.Contains(levelName))
@@ -57,56 +54,27 @@ public class SaveManager : MonoBehaviour
     #region Overworld Methods
 
     /// <summary>
-    /// Save the player's overworld position, aligned to grid (nearest 0.5)
+    /// Save the player's overworld position (aligned to grid if needed)
     /// </summary>
-    public void SaveOverworldPosition(Vector3 pos, float lockDuration = 0.5f)
+    public void SaveOverworldPosition(Vector3 pos)
     {
-        // Round to nearest 0.5 to align with grid
+        // If you DON'T want grid snapping anymore, just assign pos directly
         overworldPlayerPosition = new Vector3(
             Mathf.Floor(pos.x) + 0.5f,
             Mathf.Floor(pos.y) + 0.5f,
             pos.z
         );
-
-
-        // Find player and start movement lock coroutine
-        GridMovementHold playerMovement = GameObject.FindGameObjectWithTag("Player")?.GetComponent<GridMovementHold>();
-        if (playerMovement != null)
-        {
-            playerMovement.StartCoroutine(LockMovementCoroutine(playerMovement, lockDuration));
-        }
-        else
-        {
-            Debug.LogWarning("SaveManager: Could not find Player GameObject to lock movement.");
-        }
     }
-
-    /// <summary>
-    /// Coroutine to temporarily disable movement
-    /// </summary>
-    private IEnumerator LockMovementCoroutine(GridMovementHold movement, float duration)
-    {
-        movement.enabled = false;
-        yield return new WaitForSeconds(duration);
-        movement.enabled = true;
-    }
-
 
     #endregion
 
     #region Keys
 
-    /// <summary>
-    /// Collect a key and make it persist across levels
-    /// </summary>
     public void CollectKey(string keyID)
     {
         collectedKeys.Add(keyID);
     }
 
-    /// <summary>
-    /// Check if a key has already been collected
-    /// </summary>
     public bool HasKey(string keyID)
     {
         return collectedKeys.Contains(keyID);

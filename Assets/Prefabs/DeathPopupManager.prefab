@@ -48,5 +48,5 @@ MonoBehaviour:
   respawnPoint: {fileID: 0}
   autoUsePlayerPosition: 1
   resetSceneName: 
-  overworldSceneName: 
+  overworldSceneName: OverworldScene
   titleScreenSceneName: StartScene

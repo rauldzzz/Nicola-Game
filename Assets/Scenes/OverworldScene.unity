@@ -3904,7 +3904,7 @@ Animator:
   m_GameObject: {fileID: 442382794}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 8077044f36ef6774c9b7ee5069272e55, type: 2}
+  m_Controller: {fileID: 9100000, guid: 0be2191cde3a71e49bd832097248e9da, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -3966,7 +3966,7 @@ MonoBehaviour:
   teleportOffset: {x: 0, y: 0}
   fadeDuration: 0.1
   holdDuration: 0.6
-  fadeImage: {fileID: 0}
+  fadeImage: {fileID: 1245203990}
   requiredKeyID: 1
 --- !u!61 &488412541
 BoxCollider2D:
@@ -4183,7 +4183,7 @@ MonoBehaviour:
   teleportOffset: {x: 0, y: 0}
   fadeDuration: 0.1
   holdDuration: 0.6
-  fadeImage: {fileID: 0}
+  fadeImage: {fileID: 1245203990}
   requiredKeyID: 1
 --- !u!61 &566946852
 BoxCollider2D:
@@ -67114,7 +67114,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e88484e9411c9c348a5ca6f365aec5c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneToLoad: 2dPlatformerScene
+  sceneToLoad: FYR_Minigame
   isLevelEntrance: 1
 --- !u!212 &943161916
 SpriteRenderer:

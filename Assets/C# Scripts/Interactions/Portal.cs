@@ -4,16 +4,11 @@ using UnityEngine.SceneManagement;
 public class Portal : MonoBehaviour, IInteractable
 {
     [Header("Scene Settings")]
-    public string sceneToLoad;       // Name of target scene
-    public bool isLevelEntrance = true;  // True = going FROM overworld TO level
+    public string sceneToLoad;
+    public bool isLevelEntrance = true;
 
-    // Always interactable
-    public bool CanInteract()
-    {
-        return true;
-    }
+    public bool CanInteract() => true;
 
-    // Trigger scene load
     public void Interact()
     {
         if (string.IsNullOrEmpty(sceneToLoad))
@@ -22,21 +17,20 @@ public class Portal : MonoBehaviour, IInteractable
             return;
         }
 
-        // Going from overworld into a level
         if (isLevelEntrance)
         {
-            SaveManager.Instance.overworldPlayerPosition = 
-                OverworldPlayerReference().position;
-
-            SaveManager.Instance.lastVisitedLevel = sceneToLoad;
+            GameObject player = GameObject.FindGameObjectWithTag("Player");
+            if (player != null && SaveManager.Instance != null)
+            {
+                SaveManager.Instance.SaveOverworldPosition(player.transform.position);
+                SaveManager.Instance.lastVisitedLevel = sceneToLoad;
+            }
+            else
+            {
+                Debug.LogWarning("Portal: Player or SaveManager not found!");
+            }
         }
 
         SceneManager.LoadScene(sceneToLoad);
-    }
-
-    private Transform OverworldPlayerReference()
-    {
-        GameObject player = GameObject.FindGameObjectWithTag("Player");
-        return player.transform;
     }
 }

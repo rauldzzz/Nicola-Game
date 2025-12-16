@@ -43,6 +43,6 @@ public class RoomFound : MonoBehaviour
     private void ReturnToOverworld()
     {
         Time.timeScale = 1f; // unfreeze
-        SceneManager.LoadScene("OWTest"); // replace with your scene name
+        SceneManager.LoadScene("OverworldScene");
     }
 }

@@ -9,13 +9,8 @@ public class InteractionDetector : MonoBehaviour
     [Header("Interaction Settings")]
     public KeyCode interactionKey = KeyCode.E; // Key to press for interaction
 
-    private GridMovementHold playerMovement;
-
     void Start()
     {
-        // Find the player and get its movement script
-        playerMovement = GameObject.FindGameObjectWithTag("Player")?.GetComponent<GridMovementHold>();
-        
         if (interactionIcon != null)
             interactionIcon.SetActive(false);
     }
@@ -24,12 +19,12 @@ public class InteractionDetector : MonoBehaviour
     {
         if (interactableInRange != null)
         {
-            // Show or hide the interaction icon depending on player movement
+            // Show interaction icon
             if (interactionIcon != null)
-                interactionIcon.SetActive(!playerMovement.isMoving);
+                interactionIcon.SetActive(true);
 
-            // Only allow interaction if the player is not moving
-            if ((playerMovement == null || !playerMovement.isMoving) && Input.GetKeyDown(interactionKey))
+            // Interact on key press
+            if (Input.GetKeyDown(interactionKey))
             {
                 interactableInRange.Interact();
             }
@@ -39,7 +34,7 @@ public class InteractionDetector : MonoBehaviour
     // Optional Input System method
     public void OnInteract(InputAction.CallbackContext context)
     {
-        if (context.performed && interactableInRange != null && (playerMovement == null || !playerMovement.isMoving))
+        if (context.performed && interactableInRange != null)
         {
             interactableInRange.Interact();
         }
@@ -53,7 +48,7 @@ public class InteractionDetector : MonoBehaviour
             interactableInRange = interactable;
 
             if (interactionIcon != null)
-                interactionIcon.SetActive(!playerMovement.isMoving);
+                interactionIcon.SetActive(true);
         }
     }
 
