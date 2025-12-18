@@ -1,7 +1,9 @@
-using TMPro; 
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System.Collections;
+using System.Collections.Generic;
 public class BusGameManager : MonoBehaviour
 {
     public static BusGameManager Instance;
@@ -19,22 +21,24 @@ public class BusGameManager : MonoBehaviour
 
     [Header("Game Settings")]
     public GameObject rockPrefab;
-    public float gameDuration = 60f; 
-    public float totalDistance = 100f; 
+    public float gameDuration = 60f;
+    public float totalDistance = 100f;
 
     [Header("Spawning")]
     public float spawnInterval = 1.5f;
     public float laneDistance = 1.5f;
 
     [Header("References")]
-    public BusController busController; 
-    public GameObject winPanel;         
+    public BusController busController;
+    public GameObject winPanel;
     public Slider progressSlider;
     public TextMeshProUGUI distanceText;
 
     private float timer;
     private float currentDistance;
     private bool gameFinished = false;
+    private List<GameObject> spawnedRocks = new List<GameObject>();
+
 
     void OnValidate()
     {
@@ -48,7 +52,7 @@ public class BusGameManager : MonoBehaviour
 
     void Awake()
     {
-        Instance = this; 
+        Instance = this;
     }
 
     void Start()
@@ -97,7 +101,9 @@ public class BusGameManager : MonoBehaviour
 
         // Spawn just above the screen (e.g., Y = 6)
         Vector3 spawnPos = new Vector3(spawnX, 6f, 0);
-        Instantiate(rockPrefab, spawnPos, Quaternion.identity);
+        GameObject rock = Instantiate(rockPrefab, spawnPos, Quaternion.identity);
+
+        spawnedRocks.Add(rock);
     }
 
     void FinishGame()
@@ -108,14 +114,28 @@ public class BusGameManager : MonoBehaviour
         // 1. Stop spawning NEW rocks immediately
         CancelInvoke(nameof(SpawnRock));
 
-        // 2. Start the smooth braking coroutine instead of setting speed to 0 instantly
+        // 2. Despawn ALL existing rocks
+        DespawnAllRocks();
+
+        // 3. Start the smooth braking coroutine instead of setting speed to 0 instantly
         StartCoroutine(BrakeToStop());
 
-        // 3. Tell bus to park
+        // 4. Tell bus to park
         if (busController != null) busController.StartArrivalSequence();
 
-        // 4. Show UI after a delay (Wait for the bus to fully stop first)
+        // 5. Show UI after a delay (Wait for the bus to fully stop first)
         Invoke(nameof(ShowWinUI), 3.5f); // Increased delay to 3.5s to account for braking time
+    }
+
+    void DespawnAllRocks()
+    {
+        foreach (GameObject rock in spawnedRocks)
+        {
+            if (rock != null)
+                Destroy(rock);
+        }
+
+        spawnedRocks.Clear();
     }
 
     // This is the new smooth braking logic
