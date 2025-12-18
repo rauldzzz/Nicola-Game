@@ -16,7 +16,7 @@ public class DeathPopupManager : MonoBehaviour
     public string resetSceneName = "";
 
     [Tooltip("LoadOverworld")]
-    public string overworldSceneName = "OverworldScene";
+    public string overworldSceneName = "OWTest";
 
     [Tooltip("LoadTitleScreen")]
     public string titleScreenSceneName = "StartScene";

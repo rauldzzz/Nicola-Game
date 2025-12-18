@@ -294,7 +294,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4146036845707140724, guid: bf32bd03d19860a409770a320901da78, type: 3}
       propertyPath: overworldSceneName
-      value: OWTest
+      value: OverworldScene
       objectReference: {fileID: 0}
     - target: {fileID: 6785112862087774364, guid: bf32bd03d19860a409770a320901da78, type: 3}
       propertyPath: m_LocalPosition.x
