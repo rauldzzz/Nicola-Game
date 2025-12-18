@@ -1,9 +1,18 @@
-using UnityEngine;
-using UnityEngine.UI; 
 using TMPro; 
+using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 public class BusGameManager : MonoBehaviour
 {
     public static BusGameManager Instance;
+
+    [Header("Next Level Setup")]
+    // 1. This is the box you drag the scene into
+#if UNITY_EDITOR
+    public UnityEditor.SceneAsset nextSceneFile;
+#endif
+    // 2. This is the hidden text variable the game actually uses
+    [HideInInspector] public string nextSceneName;
 
     [Header("Game Settings")]
     public float gameSpeed = 10f;
@@ -15,15 +24,27 @@ public class BusGameManager : MonoBehaviour
 
     [Header("Spawning")]
     public float spawnInterval = 1.5f;
-    public float laneDistance = 1.5f; 
+    public float laneDistance = 1.5f;
 
-    [Header("UI References")]
+    [Header("References")]
+    public BusController busController; 
+    public GameObject winPanel;         
     public Slider progressSlider;
-    public TextMeshProUGUI distanceText; 
+    public TextMeshProUGUI distanceText;
 
     private float timer;
     private float currentDistance;
     private bool gameFinished = false;
+
+    void OnValidate()
+    {
+#if UNITY_EDITOR
+        if (nextSceneFile != null)
+        {
+            nextSceneName = nextSceneFile.name;
+        }
+#endif
+    }
 
     void Awake()
     {
@@ -32,6 +53,11 @@ public class BusGameManager : MonoBehaviour
 
     void Start()
     {
+        if (winPanel != null)
+        {
+            winPanel.SetActive(false);
+        }
+
         currentDistance = totalDistance;
 
         // Initialize Slider
@@ -49,22 +75,13 @@ public class BusGameManager : MonoBehaviour
     {
         if (gameFinished) return;
 
-        // 1. Update Timer
         timer += Time.deltaTime;
-
-        // 2. Calculate Distance
-        // We calculate how much distance to remove per frame to ensure it hits 0 at exactly 60 seconds
         float depreciationRate = totalDistance / gameDuration;
         currentDistance -= depreciationRate * Time.deltaTime;
 
-        // 3. Update UI
-        if (distanceText != null)
-            distanceText.text = currentDistance.ToString("F1") + " km";
+        if (distanceText != null) distanceText.text = currentDistance.ToString("F1") + " km";
+        if (progressSlider != null) progressSlider.value = currentDistance;
 
-        if (progressSlider != null)
-            progressSlider.value = currentDistance;
-
-        // 4. Check Win Condition
         if (timer >= gameDuration)
         {
             FinishGame();
@@ -86,9 +103,53 @@ public class BusGameManager : MonoBehaviour
     void FinishGame()
     {
         gameFinished = true;
-        currentDistance = 0; 
-        CancelInvoke(nameof(SpawnRock)); 
-        Debug.Log("Level Complete!");
+        currentDistance = 0;
 
+        // 1. Stop spawning NEW rocks immediately
+        CancelInvoke(nameof(SpawnRock));
+
+        // 2. Start the smooth braking coroutine instead of setting speed to 0 instantly
+        StartCoroutine(BrakeToStop());
+
+        // 3. Tell bus to park
+        if (busController != null) busController.StartArrivalSequence();
+
+        // 4. Show UI after a delay (Wait for the bus to fully stop first)
+        Invoke(nameof(ShowWinUI), 3.5f); // Increased delay to 3.5s to account for braking time
+    }
+
+    // This is the new smooth braking logic
+    System.Collections.IEnumerator BrakeToStop()
+    {
+        float startSpeed = gameSpeed;
+        float duration = 3.0f; // How long it takes to stop (3 seconds)
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            // Reduce speed over time
+            gameSpeed = Mathf.Lerp(startSpeed, 0f, elapsed / duration);
+            elapsed += Time.deltaTime;
+            yield return null; // Wait for next frame
+        }
+
+        gameSpeed = 0f; // Ensure it hits exactly 0 at the end
+    }
+    void ShowWinUI()
+    {
+        if (winPanel != null) winPanel.SetActive(true);
+    }
+
+    // Call this from the Button
+    public void LoadNextScene()
+    {
+        if (!string.IsNullOrEmpty(nextSceneName))
+        {
+            SceneManager.LoadScene(nextSceneName);
+        }
+        else
+        {
+            Debug.LogError("No next scene linked in GameManager!");
+        }
     }
 }
