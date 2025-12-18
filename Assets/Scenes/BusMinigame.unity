@@ -132,7 +132,7 @@ GameObject:
   - component: {fileID: 81961596}
   - component: {fileID: 81961595}
   m_Layer: 5
-  m_Name: Canvas
+  m_Name: UI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1136,6 +1136,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 81961598}
     m_Modifications:
+    - target: {fileID: 2472619878566991239, guid: cc7a2d875562fb44b95c54e3e0535f4d, type: 3}
+      propertyPath: showOnlyOnce
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4994360982683981064, guid: cc7a2d875562fb44b95c54e3e0535f4d, type: 3}
       propertyPath: m_text
       value: "MOVEMENT:\tA / D or Arrowkeys for Left  / Right\n\nINFO:\n\nIn Linz,

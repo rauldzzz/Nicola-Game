@@ -129,7 +129,7 @@ GameObject:
   m_Component:
   - component: {fileID: 52669291}
   m_Layer: 5
-  m_Name: UI
+  m_Name: PlayerStats
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -658,7 +658,7 @@ GameObject:
   - component: {fileID: 588471863}
   - component: {fileID: 588471862}
   m_Layer: 5
-  m_Name: Canvas
+  m_Name: UI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1484,6 +1484,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 588471865}
     m_Modifications:
+    - target: {fileID: 2472619878566991239, guid: cc7a2d875562fb44b95c54e3e0535f4d, type: 3}
+      propertyPath: showOnlyOnce
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4825655297525684411, guid: cc7a2d875562fb44b95c54e3e0535f4d, type: 3}
       propertyPath: m_SizeDelta.x
       value: 1100

@@ -12,14 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e0970ff11e7aa734ebfb88ca63006d9b, type: 3}
   m_Name: FirstNPCDialogue
   m_EditorClassIdentifier: 
-  npcName: FirstNPC
-  npcPortrait: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  npcName: Receptionis
+  npcPortrait: {fileID: -1008974987, guid: 5ea499a5ffd5333469bfb9f8a7ce04f2, type: 3}
   dialogueLines:
   - Hello there!
   - Welcome to Hagenberg!
-  - Above me you can find the first Level.
-  - There is a Key inside the Level. Get it so you can proceed to the next Level
-  - Good Luck and have fun!
+  - Here is the key to your Room.
+  - Just go through the door and walk down the coridor
+  - Have a nice time in Hagenberg!
   autoProgressLines: 
   autoProgressDelay: 1.5
   typingSpeed: 0.05
