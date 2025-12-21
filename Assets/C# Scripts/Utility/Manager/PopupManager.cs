@@ -29,7 +29,9 @@ public class PopupManager : MonoBehaviour
     // Button action
     public void ReturnToStartScene()
     {
-        Time.timeScale = 1f; // Resume time before scene switch
-        SceneManager.LoadScene("StartScene"); // Replace with your start scene name
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#endif
+        Application.Quit();
     }
 }
