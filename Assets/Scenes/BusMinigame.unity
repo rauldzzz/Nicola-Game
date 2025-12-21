@@ -1142,10 +1142,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4994360982683981064, guid: cc7a2d875562fb44b95c54e3e0535f4d, type: 3}
       propertyPath: m_text
-      value: "MOVEMENT:\tA / D or Arrowkeys for Left  / Right\n\nINFO:\n\nIn Linz,
-        you took the bus to get to Hagenberg but rocks are falling down the road!
-        WATCH OUT!\n\nOBJECTIV:\n\nMove the bus with the movement keys to dodge the
-        rocks on the road until you arrive in Hagenberg."
+      value: "MOVEMENT:\nA / D or Arrow Keys \u2013 Move Left / Right\n\nINFO:\nIn
+        Linz, you took the bus to get to Hagenberg, but rocks are falling onto the
+        road! Watch out!\n\nOBJECTIVE:\nUse the movement keys to move the bus and
+        dodge the falling rocks until you arrive in Hagenberg."
       objectReference: {fileID: 0}
     - target: {fileID: 6419368415277135816, guid: cc7a2d875562fb44b95c54e3e0535f4d, type: 3}
       propertyPath: m_Name

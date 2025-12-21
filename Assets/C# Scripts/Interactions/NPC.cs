@@ -1,9 +1,8 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 
 public class NPC : MonoBehaviour, IInteractable
 {
@@ -12,8 +11,12 @@ public class NPC : MonoBehaviour, IInteractable
     public TMP_Text dialogueText, nameText;
     public Image portraitImage;
 
+    public UnityEvent OnDialogueFinished;
+
     private int dialogueIndex;
     private bool isTyping, isDialogueActive;
+
+    public bool HasFinishedDialogue { get; private set; }
 
     public bool CanInteract()
     {
@@ -22,19 +25,12 @@ public class NPC : MonoBehaviour, IInteractable
 
     public void Interact()
     {
-        if (dialogueData == null)
-        {
-            return;
-        }
+        if (dialogueData == null) return;
 
         if (isDialogueActive)
-        {
             NextLine();
-        }
         else
-        {
             StartDialogue();
-        }
     }
 
     void StartDialogue()
@@ -46,23 +42,19 @@ public class NPC : MonoBehaviour, IInteractable
         portraitImage.sprite = dialogueData.npcPortrait;
 
         dialoguePanel.SetActive(true);
-
         StartCoroutine(TypeLine());
-
     }
 
     void NextLine()
     {
         if (isTyping)
         {
-            // Skip typing animation and show full line
             StopAllCoroutines();
             dialogueText.SetText(dialogueData.dialogueLines[dialogueIndex]);
             isTyping = false;
         }
         else if (++dialogueIndex < dialogueData.dialogueLines.Length)
         {
-            // If another line, type next line
             StartCoroutine(TypeLine());
         }
         else
@@ -84,7 +76,8 @@ public class NPC : MonoBehaviour, IInteractable
 
         isTyping = false;
 
-        if (dialogueData.autoProgressLines.Length > dialogueIndex && dialogueData.autoProgressLines[dialogueIndex])
+        if (dialogueData.autoProgressLines.Length > dialogueIndex &&
+            dialogueData.autoProgressLines[dialogueIndex])
         {
             yield return new WaitForSeconds(dialogueData.autoProgressDelay);
             NextLine();
@@ -97,5 +90,12 @@ public class NPC : MonoBehaviour, IInteractable
         isDialogueActive = false;
         dialogueText.SetText("");
         dialoguePanel.SetActive(false);
+
+        if (!HasFinishedDialogue)
+        {
+            HasFinishedDialogue = true;
+            OnDialogueFinished?.Invoke();
+            Debug.Log($"[{name}] Dialogue finished, showing object now!");
+        }
     }
 }

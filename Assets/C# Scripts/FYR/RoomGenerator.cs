@@ -145,9 +145,13 @@ public class RoomGenerator : MonoBehaviour
             }
         }
 
-
-        // 5. Connect entrances and spawn entities
+        // 5. Connect entrances
         ConnectEntrances();
+
+        // 5b. Fill remaining open entrances with dead-ends
+        FillRemainingOpenEntrancesWithDeadEnds();
+
+        // 6. Spawn entities
         SpawnEntities();
     }
 
@@ -326,6 +330,36 @@ public class RoomGenerator : MonoBehaviour
             }
         }
     }
+
+    void FillRemainingOpenEntrancesWithDeadEnds()
+{
+    // Iterate over a copy of allRooms to avoid modifying the collection during iteration
+    List<Room> roomsToCheck = new List<Room>(allRooms);
+
+    foreach (var room in roomsToCheck)
+    {
+        foreach (var dir in directions)
+        {
+            var entrance = room.GetEntrance(dir);
+            if (entrance == null || !entrance.gameObject.activeSelf) continue;
+
+            // Find a dead-end that has a matching entrance
+            RoomData deadEndData = deadEndRooms.FirstOrDefault(d =>
+            {
+                Room r = d.prefab.GetComponent<Room>();
+                return r.GetEntrance(OppositeDirection(dir)) != null;
+            });
+
+            if (deadEndData == null) continue;
+
+            if (TryPlaceNextRoomAtOpenEntrance(room, dir, deadEndData, out Room placed))
+            {
+                placed.type = RoomType.DeadEnd;
+                allRooms.Add(placed); // safe because we’re iterating over the copy
+            }
+        }
+    }
+}
 
     #endregion
 }

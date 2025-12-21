@@ -364,6 +364,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: DeathPopupManager
       objectReference: {fileID: 0}
+    - target: {fileID: 4146036845707140724, guid: bf32bd03d19860a409770a320901da78, type: 3}
+      propertyPath: deathPopup
+      value: 
+      objectReference: {fileID: 1046416459}
     - target: {fileID: 6785112862087774364, guid: bf32bd03d19860a409770a320901da78, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -485,6 +489,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: DeathPopup
       objectReference: {fileID: 0}
+    - target: {fileID: 658038648101683468, guid: e38449ff576eb9640824842d2af7e912, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1143773472080156675, guid: e38449ff576eb9640824842d2af7e912, type: 3}
+      propertyPath: m_TargetGraphic
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 7583192198508902006, guid: e38449ff576eb9640824842d2af7e912, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -566,7 +578,9 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 833410108495071260, guid: e38449ff576eb9640824842d2af7e912, type: 3}
+    - {fileID: 6690913395212125258, guid: e38449ff576eb9640824842d2af7e912, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e38449ff576eb9640824842d2af7e912, type: 3}
@@ -929,6 +943,11 @@ Transform:
   - {fileID: 436686953}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1046416459 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 658038648101683468, guid: e38449ff576eb9640824842d2af7e912, type: 3}
+  m_PrefabInstance: {fileID: 471736292}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1062974925
 GameObject:
   m_ObjectHideFlags: 0
@@ -1506,11 +1525,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4994360982683981064, guid: cc7a2d875562fb44b95c54e3e0535f4d, type: 3}
       propertyPath: m_text
-      value: "MOVEMENT:\tW / A / S / S for UP / Left / Down / Right\n\nATTACK:\t\tSPACEBAR\n\nINFO:\n\nYou
-        got your key from the reception and now you have to find your room.\n\nOBJECTIV:\n\nNavigate
-        through the maze and find the Endroom to finish the level. On your way there
-        you have to fend off bugs.\n\nBe careful, you have 3 Healthpoints. If you
-        lose them all you will have to try again"
+      value: "MOVEMENT:\nW / A / S / D \u2013 Up / Left / Down / Right\n\nATTACK:\nSpacebar\n\nINFO:\nYou
+        got your key from the reception, and now you have to find your room.\n\nOBJECTIVE:\nNavigate
+        through the maze and find the end room to finish the level. Along the way,
+        you must fend off bugs.\n\nBe careful\u2014you have 3 health points. If you
+        lose them all, you will have to try again."
       objectReference: {fileID: 0}
     - target: {fileID: 4994360982683981064, guid: cc7a2d875562fb44b95c54e3e0535f4d, type: 3}
       propertyPath: m_margin.w

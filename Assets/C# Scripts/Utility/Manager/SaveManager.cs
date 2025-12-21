@@ -1,10 +1,9 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// Singleton SaveManager to track player progress across scenes
-/// Handles overworld position, level completion, keys, and interactions.
-/// Coins and level-specific elements reset each time a level is loaded.
 /// </summary>
 public class SaveManager : MonoBehaviour
 {
@@ -37,10 +36,39 @@ public class SaveManager : MonoBehaviour
 
         Instance = this;
         DontDestroyOnLoad(gameObject);
+
+        // Subscribe to scene changes
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        // Only move player if overworld scene
+        if (scene.name == "OverworldScene") 
+        {
+            MovePlayerToSavedPosition();
+        }
+    }
+
+    private void MovePlayerToSavedPosition()
+    {
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if (player != null)
+        {
+            player.transform.position = overworldPlayerPosition;
+        }
+        else
+        {
+            Debug.LogWarning("Player not found in the overworld scene!");
+        }
     }
 
     #region Level Methods
-
     public void CompleteLevel(string levelName)
     {
         if (!completedLevels.Contains(levelName))
@@ -48,28 +76,20 @@ public class SaveManager : MonoBehaviour
 
         lastVisitedLevel = levelName;
     }
-
     #endregion
 
     #region Overworld Methods
-
-    /// <summary>
-    /// Save the player's overworld position (aligned to grid if needed)
-    /// </summary>
     public void SaveOverworldPosition(Vector3 pos)
     {
-        // If you DON'T want grid snapping anymore, just assign pos directly
         overworldPlayerPosition = new Vector3(
             Mathf.Floor(pos.x) + 0.5f,
             Mathf.Floor(pos.y) + 0.5f,
             pos.z
         );
     }
-
     #endregion
 
     #region Keys
-
     public void CollectKey(string keyID)
     {
         collectedKeys.Add(keyID);
@@ -79,6 +99,5 @@ public class SaveManager : MonoBehaviour
     {
         return collectedKeys.Contains(keyID);
     }
-
     #endregion
 }

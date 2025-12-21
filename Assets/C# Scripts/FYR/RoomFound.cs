@@ -7,6 +7,13 @@ public class RoomFound : MonoBehaviour
     [Header("UI Settings")]
     public GameObject winPopupPrefab;
 
+    [Header("Overworld Settings")]
+    [Tooltip("Optional: set this to override the overworld spawn position")]
+    public Vector3 overworldSpawnPosition;
+
+    [Header("Level Settings")]
+    public string levelName = "MinigameLevel"; // unique identifier for this minigame
+
     private bool hasWon = false;
     
     private void OnTriggerEnter2D(Collider2D other)
@@ -22,6 +29,15 @@ public class RoomFound : MonoBehaviour
     {
         hasWon = true;
 
+        // Mark the level as completed
+        if (SaveManager.Instance != null)
+        {
+            SaveManager.Instance.CompleteLevel(levelName);
+
+            // Directly set the overworld position
+            SaveManager.Instance.SaveOverworldPosition(overworldSpawnPosition);
+        }
+
         // Freeze the game
         Time.timeScale = 0f;
 
@@ -29,7 +45,6 @@ public class RoomFound : MonoBehaviour
         if (winPopupPrefab != null)
         {
             GameObject popup = Instantiate(winPopupPrefab);
-            // Find the button and assign the callback
             Button btn = popup.GetComponentInChildren<Button>();
             if (btn != null)
                 btn.onClick.AddListener(() => ReturnToOverworld());

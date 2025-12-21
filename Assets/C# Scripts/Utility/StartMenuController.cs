@@ -7,13 +7,16 @@ using TMPro;
 public class StartMenuController : MonoBehaviour
 {
     [Header("Scene Settings")]
-    [Tooltip("Name of the scene to load when pressing Start (optional)")]
     public string sceneToLoad;
 
     [Header("UI Elements")]
     public CanvasGroup uiGroup;
     public GameObject buttonHighlight;
     public TMP_Text transitionText;
+
+    [Header("Black Screen")]
+    public CanvasGroup blackScreenGroup;
+    public float blackScreenHoldTime = 3f;
 
     [Header("Animation Settings")]
     public float fadeDuration = 1f;
@@ -28,9 +31,36 @@ public class StartMenuController : MonoBehaviour
     private bool isTransitioning = false;
 
     void Awake()
-    {   
-        if (uiGroup == null)
-            Debug.LogWarning("UIGroup not assigned! Please assign it in the Inspector.");
+    {
+        if (blackScreenGroup != null)
+        {
+            blackScreenGroup.alpha = 1f;
+            blackScreenGroup.blocksRaycasts = true;
+        }
+
+        if (backgroundMusic != null)
+            backgroundMusic.Stop();
+    }
+
+    void Start()
+    {
+        StartCoroutine(StartupSequence());
+    }
+
+    private IEnumerator StartupSequence()
+    {
+        // Hold black screen
+        yield return new WaitForSeconds(blackScreenHoldTime);
+
+        // Fade out black screen
+        if (blackScreenGroup != null)
+            yield return StartCoroutine(FadeCanvasGroup(blackScreenGroup, 1f, 0f, fadeDuration));
+
+        blackScreenGroup.blocksRaycasts = false;
+
+        // Start music AFTER reveal
+        if (backgroundMusic != null)
+            backgroundMusic.Play();
     }
 
     public void OnStartClick()
@@ -51,22 +81,18 @@ public class StartMenuController : MonoBehaviour
     {
         isTransitioning = true;
 
-        // Disable all buttons
         foreach (Button button in GetComponentsInChildren<Button>())
             button.interactable = false;
 
         if (buttonHighlight != null)
             buttonHighlight.SetActive(false);
 
-        // Fade out UI
         if (uiGroup != null)
             yield return StartCoroutine(FadeCanvasGroup(uiGroup, 1f, 0f, fadeDuration));
 
-        // Fade audio
         if (backgroundMusic != null)
             yield return StartCoroutine(FadeAudio(backgroundMusic, fadeDuration));
 
-        // Animate transition text
         if (transitionText != null)
         {
             transitionText.alpha = 0f;
@@ -98,19 +124,10 @@ public class StartMenuController : MonoBehaviour
             }
         }
 
-        // Load scene by name or next build index
         if (!string.IsNullOrEmpty(sceneToLoad))
-        {
             SceneManager.LoadScene(sceneToLoad);
-        }
         else
-        {
-            int nextSceneIndex = SceneManager.GetActiveScene().buildIndex + 1;
-            if (nextSceneIndex < SceneManager.sceneCountInBuildSettings)
-                SceneManager.LoadScene(nextSceneIndex);
-            else
-                Debug.LogWarning("No next scene in build settings!");
-        }
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
 
     private IEnumerator FadeCanvasGroup(CanvasGroup group, float from, float to, float duration)

@@ -2506,6 +2506,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   winPopupPrefab: {fileID: 4079461785320048820, guid: bad82c59f56efe546b4a0472e5ad89fe, type: 3}
+  overworldSpawnPosition: {x: 12.5, y: -62, z: 0}
+  levelName: FYRMinigame
 --- !u!61 &4467511833799316537
 BoxCollider2D:
   m_ObjectHideFlags: 0
