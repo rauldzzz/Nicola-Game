@@ -394,7 +394,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 3adeb7523841e0040932fbabf27abee5, type: 2}
   targetECTS: 30
   nextScene: {fileID: 422820027}
-  nextSceneName: OWTest
+  nextSceneName: OverworldScene
   sidebarContent: {fileID: 2033952779}
   calendarGrid: {fileID: 118674880}
   listItemPrefab: {fileID: 7944257657597506538, guid: 51f8becb52bba2344a393b874adbe49d, type: 3}
