@@ -10,22 +10,22 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fa94a43f4505a64438e42082541aac36, type: 3}
-  m_Name: AIC
+  m_Name: ALD
   m_EditorClassIdentifier: 
-  courseName: AI in Creativity
-  shortName: AIC
+  courseName: Algorithms and Data Structures
+  shortName: ALD
   ects: 5
   courseColor: {r: 0, g: 0, b: 1, a: 1}
   sessions:
-  - dayIndex: 0
+  - dayIndex: 2
     weekIndex: 0
-    startTime: 16
+    startTime: 14
     duration: 3
-  - dayIndex: 0
+  - dayIndex: 2
     weekIndex: 1
-    startTime: 16
+    startTime: 14
     duration: 3
-  - dayIndex: 0
+  - dayIndex: 2
     weekIndex: 2
-    startTime: 16
+    startTime: 14
     duration: 3

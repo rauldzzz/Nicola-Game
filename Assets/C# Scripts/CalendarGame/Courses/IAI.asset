@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: IAI
   m_EditorClassIdentifier: 
   courseName: Introduction to AI
+  shortName: IAI
   ects: 5
   courseColor: {r: 0, g: 0, b: 1, a: 1}
   sessions:

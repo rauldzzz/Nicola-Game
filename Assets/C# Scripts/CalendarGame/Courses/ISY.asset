@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: ISY
   m_EditorClassIdentifier: 
   courseName: Intelligent Systems
+  shortName: ISY
   ects: 5
   courseColor: {r: 0, g: 0, b: 1, a: 1}
   sessions:

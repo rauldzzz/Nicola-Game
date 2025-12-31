@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: SEMPRO
   m_EditorClassIdentifier: 
   courseName: Semester Project
+  shortName: SEM
   ects: 10
   courseColor: {r: 0, g: 0, b: 1, a: 1}
   sessions:

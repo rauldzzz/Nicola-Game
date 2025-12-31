@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: FCS
   m_EditorClassIdentifier: 
   courseName: Foundations of Computer Science
+  shortName: FCS
   ects: 5
   courseColor: {r: 0, g: 0, b: 1, a: 1}
   sessions:

@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: MAD
   m_EditorClassIdentifier: 
   courseName: Mobile App Developement
+  shortName: MAD
   ects: 5
   courseColor: {r: 0, g: 0, b: 1, a: 1}
   sessions:
@@ -22,7 +23,7 @@ MonoBehaviour:
     duration: 4
   - dayIndex: 4
     weekIndex: 1
-    startTime: 15
+    startTime: 13
     duration: 4
   - dayIndex: 4
     weekIndex: 2

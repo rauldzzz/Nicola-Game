@@ -2,30 +2,35 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 public class CalendarManager : MonoBehaviour
 {
     [Header("Configuration")]
-    public List<CourseData> allCourses; // Drag all your ScriptableObjects here
+    public List<CourseData> allCourses;
     public float targetECTS = 30f;
 
+    [Header("Next Scene")]
+    public GameObject nextScene;
+    public string nextSceneName;
+
     [Header("UI References")]
-    public Transform sidebarContent; // The parent for the list items
-    public Transform calendarGrid;   // The parent for the event blocks
+    public Transform sidebarContent;
+    public Transform calendarGrid; 
     public CourseListItemUI listItemPrefab;
     public GameObject eventBlockPrefab;
     public TextMeshProUGUI ectsLabel;
     public TextMeshProUGUI weekLabel;
+    public GameObject winPanel;
+    public bool isOverlapping = false;
 
     [Header("Grid Settings")]
-    public float rowHeight = 50f; // Pixels per hour
-    public float colWidth = 100f; // Pixels per day
-    // Offset if your grid doesn't start exactly at (0,0) of the container
+    public float rowHeight = 50f;
+    public float colWidth = 100f; 
     public Vector2 startOffset = new Vector2(50, -50);
 
-    // State
     private List<CourseData> selectedCourses = new List<CourseData>();
-    private int currentWeek = 0; // 0 to 2
+    private int currentWeek = 0;
     private float currentTotalECTS = 0;
 
     void Start()
@@ -40,7 +45,6 @@ public class CalendarManager : MonoBehaviour
         {
             var item = Instantiate(listItemPrefab, sidebarContent);
             item.Setup(course, this);
-            // Auto-hook the button click
             item.GetComponent<Button>().onClick.AddListener(item.OnClick);
         }
     }
@@ -75,7 +79,6 @@ public class CalendarManager : MonoBehaviour
     public void ChangeWeek(int direction)
     {
         currentWeek += direction;
-        // Clamp between 0 and 2 (3 weeks)
         currentWeek = Mathf.Clamp(currentWeek, 0, 2);
 
         weekLabel.text = $"Week {currentWeek + 1}";
@@ -84,10 +87,8 @@ public class CalendarManager : MonoBehaviour
 
     void UpdateCalendar()
     {
-        // 1. Clear existing blocks
         foreach (Transform child in calendarGrid) Destroy(child.gameObject);
 
-        // 2. Spawn new blocks for selected courses in current week
         List<GameObject> activeBlocks = new List<GameObject>();
 
         foreach (var course in selectedCourses)
@@ -101,7 +102,6 @@ public class CalendarManager : MonoBehaviour
             }
         }
 
-        // 3. Check Overlaps
         CheckOverlaps(activeBlocks);
     }
 
@@ -109,44 +109,54 @@ public class CalendarManager : MonoBehaviour
     {
         GameObject block = Instantiate(eventBlockPrefab, calendarGrid);
 
-        // Calculate Position
-        // X = Day Index * Width
-        // Y = (Start Time - 8am) * Height (Negative because Y goes down in UI usually)
         float xPos = startOffset.x + (session.dayIndex * colWidth);
         float yPos = startOffset.y - ((session.startTime - 8f) * rowHeight);
 
         RectTransform rect = block.GetComponent<RectTransform>();
         rect.anchoredPosition = new Vector2(xPos, yPos);
 
-        // Calculate Size
         rect.sizeDelta = new Vector2(colWidth, session.duration * rowHeight);
 
-        // Set Color and Text (if you have text on the block)
         block.GetComponent<Image>().color = course.courseColor;
 
-        // Store data for overlap checking
-        // We attach a temporary simple component or just use tag/name to identify
         CalendarBlock blockData = block.AddComponent<CalendarBlock>();
         blockData.courseName = course.courseName;
         blockData.rect = rect;
         blockData.img = block.GetComponent<Image>();
         blockData.normalColor = course.courseColor;
 
+        var texts = block.GetComponentsInChildren<TMPro.TextMeshProUGUI>();
+
+        foreach (var t in texts)
+        {
+            if (t.name == "BlockNameText")
+            {
+                blockData.nameText = t;
+                if (string.IsNullOrEmpty(course.shortName))
+                    blockData.nameText.text = course.courseName;
+                else
+                    blockData.nameText.text = course.shortName;
+            }
+            else if (t.name == "BlockECTSText")
+            {
+                blockData.ectsText = t;
+                blockData.ectsText.text = course.ects + " ECTS";
+            }
+        }
+
         activeBlocks.Add(block);
     }
 
     void CheckOverlaps(List<GameObject> blocks)
     {
-        bool globalOverlapFound = false;
+        isOverlapping = false;
 
-        // Reset all to normal color first
         foreach (var b in blocks)
         {
             var cb = b.GetComponent<CalendarBlock>();
             cb.img.color = cb.normalColor;
         }
 
-        // Brute force check (N is small, so this is fine)
         for (int i = 0; i < blocks.Count; i++)
         {
             for (int j = i + 1; j < blocks.Count; j++)
@@ -156,18 +166,18 @@ public class CalendarManager : MonoBehaviour
 
                 if (IsOverlapping(b1.rect, b2.rect))
                 {
-                    b1.img.color = Color.red;
-                    b2.img.color = Color.red;
-                    globalOverlapFound = true;
+                    b1.img.color = new Color(1f, 0.3f, 0.3f);
+                    b2.img.color = new Color(1f, 0.3f, 0.3f);
+                    isOverlapping = true; 
                 }
             }
         }
+
+        CheckWinCondition();
     }
 
     bool IsOverlapping(RectTransform r1, RectTransform r2)
     {
-        // Simple AABB collision check for UI Rects
-        // We use local positions relative to the grid container
         Rect rect1 = new Rect(r1.anchoredPosition.x, r1.anchoredPosition.y - r1.sizeDelta.y, r1.sizeDelta.x, r1.sizeDelta.y);
         Rect rect2 = new Rect(r2.anchoredPosition.x, r2.anchoredPosition.y - r2.sizeDelta.y, r2.sizeDelta.x, r2.sizeDelta.y);
 
@@ -176,16 +186,37 @@ public class CalendarManager : MonoBehaviour
 
     void CheckWinCondition()
     {
-        // Logic to check if ECTS >= 30 and no blocks are red
-        // You might need to track the "hasOverlap" state globally
+        bool hasEnoughPoints = currentTotalECTS >= targetECTS;
+
+        bool isSafe = !isOverlapping;
+
+        if (hasEnoughPoints && isSafe)
+        {
+            if (nextScene != null) nextScene.SetActive(true);
+
+            if(winPanel != null) winPanel.SetActive(true);
+        }
+        else
+        {
+            if(nextScene != null) nextScene.SetActive(false);
+            if (winPanel != null) winPanel.SetActive(false);
+        }
+    }
+
+    public void LoadNextScene()
+    {
+        SceneManager.LoadScene(nextSceneName);
     }
 }
 
-// Helper class for the blocks
 public class CalendarBlock : MonoBehaviour
 {
     public string courseName;
     public RectTransform rect;
     public Image img;
     public Color normalColor;
+
+    public TMPro.TextMeshProUGUI nameText;
+    public TMPro.TextMeshProUGUI ectsText;
 }
+
