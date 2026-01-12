@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0970ff11e7aa734ebfb88ca63006d9b, type: 3}
+  m_Name: OrientationDaysDialogue
+  m_EditorClassIdentifier: 
+  npcName: Barbara
+  npcPortrait: {fileID: 0}
+  dialogueLines:
+  - Ah, Nicola-you are finally here!
+  - "Now that you\u2019ve arrived, we can get started and make sure everything is
+    set up so you can begin your studies with us."
+  - First, please take these documents and fill them out so you can receive your
+    student ID card. This card will give you access to campus rooms, e-learning platforms,
+    and services such as Teams and Outlook.
+  - "You\u2019ll learn more about all of this during the technical introduction."
+  - "After that, we\u2019ll review your courses together to create an optimal schedule
+    without any overlapping classes."
+  - "Please have a seat, and we\u2019ll begin."
+  autoProgressLines: 
+  autoProgressDelay: 1.5
+  typingSpeed: 0.05
+  voiceSound: {fileID: 0}
+  voicePitch: 1
