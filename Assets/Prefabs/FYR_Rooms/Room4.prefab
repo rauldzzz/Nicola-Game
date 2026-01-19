@@ -93,6 +93,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fogCover: {fileID: 4658638378557015794}
+  fadeDuration: 1
 --- !u!1 &1333614585280401995
 GameObject:
   m_ObjectHideFlags: 0
@@ -4126,6 +4127,7 @@ MonoBehaviour:
   roomSize: {x: 0, y: 0}
   roomWorldSize: {x: 0, y: 0}
   gridPos: {x: 0, y: 0}
+  type: 0
 --- !u!1 &8992395214544166304
 GameObject:
   m_ObjectHideFlags: 0
