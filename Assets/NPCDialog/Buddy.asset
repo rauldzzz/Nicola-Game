@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0970ff11e7aa734ebfb88ca63006d9b, type: 3}
+  m_Name: Buddy
+  m_EditorClassIdentifier: 
+  npcName: Buddy
+  npcPortrait: {fileID: -626578674, guid: 1d40cbcc3410b1946b5274e4ac19742e, type: 3}
+  dialogueLines:
+  - Hey Buddy! How did you sleep? I hope well!
+  - Ready for the orientation days? Just continue down to the left and you will find
+    it!
+  - Hope you have fun!
+  autoProgressLines: 
+  autoProgressDelay: 1.5
+  typingSpeed: 0.05
+  voiceSound: {fileID: 0}
+  voicePitch: 1

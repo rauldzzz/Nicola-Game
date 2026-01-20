@@ -3,11 +3,16 @@ using UnityEngine;
 public class NPCTriggeredObject : MonoBehaviour
 {
     [Header("References")]
-    public NPC targetNPC;               
-    public string minigameLevelName;    
+    public NPC targetNPC;
+    public string minigameLevelName;
+
+    [Header("Settings")]
+    [Tooltip("If true, the object will start visible even before dialogue/minigame.")]
+    public bool startVisible = false;
 
     private void Awake()
     {
+
         if (targetNPC != null)
         {
             targetNPC.OnDialogueFinished.AddListener(ShowObject);
@@ -18,14 +23,14 @@ public class NPCTriggeredObject : MonoBehaviour
             Debug.LogWarning($"[{name}] targetNPC not assigned!");
         }
 
-        // Start hidden
-        gameObject.SetActive(false);
+
+        gameObject.SetActive(startVisible);
     }
 
     private void Start()
     {
-        // Show immediately if dialogue already finished and minigame not completed
-        if (targetNPC != null && targetNPC.HasFinishedDialogue && !IsMinigameCompleted())
+
+        if (targetNPC != null && targetNPC.HasFinishedDialogue)
         {
             ShowObject();
         }
@@ -40,14 +45,10 @@ public class NPCTriggeredObject : MonoBehaviour
         }
     }
 
-    // Call this when the minigame is finished
-    public void OnMinigameCompleted()
+    // Call this when the minigame is completed
+    public void OnMinigameCompleted(bool completed)
     {
-        if (IsMinigameCompleted())
-        {
-            gameObject.SetActive(false);
-            Debug.Log($"[{name}] Minigame '{minigameLevelName}' completed, object hidden forever.");
-        }
+        gameObject.SetActive(!completed);
     }
 
     private bool IsMinigameCompleted()
