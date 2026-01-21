@@ -406,6 +406,8 @@ MonoBehaviour:
   rowHeight: 80
   colWidth: 200
   startOffset: {x: 0, y: -60}
+  overworldSpawnPosition: {x: 40.5, y: -136, z: 0}
+  levelName: CalendarMinigame
 --- !u!4 &37908995
 Transform:
   m_ObjectHideFlags: 0
@@ -1659,7 +1661,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2018543983}
   m_HandleRect: {fileID: 2018543982}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -6383,7 +6385,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1365236965}
   m_HandleRect: {fileID: 1365236964}
   m_Direction: 0
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:

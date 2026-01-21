@@ -29,6 +29,13 @@ public class CalendarManager : MonoBehaviour
     public float colWidth = 100f; 
     public Vector2 startOffset = new Vector2(50, -50);
 
+    [Header("Overworld Settings")]
+    [Tooltip("Optional: set this to override the overworld spawn position")]
+    public Vector3 overworldSpawnPosition;
+
+    [Header("Level Settings")]
+    public string levelName = "CalendarMinigame";
+
     private List<CourseData> selectedCourses = new List<CourseData>();
     private int currentWeek = 0;
     private float currentTotalECTS = 0;
@@ -205,6 +212,13 @@ public class CalendarManager : MonoBehaviour
 
     public void LoadNextScene()
     {
+                if (SaveManager.Instance != null)
+        {
+            SaveManager.Instance.CompleteLevel(levelName);
+
+            // Directly set the overworld position
+            SaveManager.Instance.SaveOverworldPosition(overworldSpawnPosition);
+        }
         SceneManager.LoadScene(nextSceneName);
     }
 }

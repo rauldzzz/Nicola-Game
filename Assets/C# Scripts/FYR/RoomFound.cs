@@ -12,7 +12,7 @@ public class RoomFound : MonoBehaviour
     public Vector3 overworldSpawnPosition;
 
     [Header("Level Settings")]
-    public string levelName = "MinigameLevel"; // unique identifier for this minigame
+    public string levelName = "FYRMinigame"; // unique identifier for this minigame
 
     private bool hasWon = false;
     
