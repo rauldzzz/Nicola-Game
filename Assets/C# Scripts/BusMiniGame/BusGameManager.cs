@@ -34,6 +34,10 @@ public class BusGameManager : MonoBehaviour
     public Slider progressSlider;
     public TextMeshProUGUI distanceText;
 
+    [Header("Overworld Settings")]
+    [Tooltip("Optional: set this to override the overworld spawn position")]
+    public Vector3 overworldSpawnPosition;
+
     private float timer;
     private float currentDistance;
     private bool gameFinished = false;
@@ -165,6 +169,11 @@ public class BusGameManager : MonoBehaviour
     {
         if (!string.IsNullOrEmpty(nextSceneName))
         {
+            if (SaveManager.Instance != null)
+            {
+                // Directly set the overworld position
+                SaveManager.Instance.SaveOverworldPosition(overworldSpawnPosition);
+            }
             SceneManager.LoadScene(nextSceneName);
         }
         else

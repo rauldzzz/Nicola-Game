@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: CitizenRegistraion
   m_EditorClassIdentifier: 
   npcName: Civil registrar
-  npcPortrait: {fileID: 0}
+  npcPortrait: {fileID: 21300000, guid: 40efba1c1d7621f458128fb058593d3d, type: 2}
   dialogueLines:
   - Ah, you must be Nicola. Thank you for making an appointment.
   - I hope your journey here went well.
@@ -25,8 +25,7 @@ MonoBehaviour:
   - ...
   - ...
   - Everything seems to be in order.
-  - Please take this downstairs and pay the fee.
-  - "Once you\u2019re done, come back here to receive your registration certificate."
+  - "Here\u2019s your EU Registration Certificate. Welcome to your new chapter."
   autoProgressLines: 
   autoProgressDelay: 1.5
   typingSpeed: 0.05
