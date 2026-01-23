@@ -20,7 +20,7 @@ MonoBehaviour:
   - Well, you know whats coming next.
   - You need to do the Citizen Registration.
   - Just head to the bus station and take the bus to Freistadt.
-  - And dont forget to bring all your Dokuments!
+  - And dont forget to bring all your documents!
   autoProgressLines: 
   autoProgressDelay: 1.5
   typingSpeed: 0.05

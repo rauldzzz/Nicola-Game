@@ -1478,7 +1478,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44b34b822fcc1ce4db06a49068cdcbdb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneToLoad: BusMinigame
+  sceneToLoad: Cutscene-1
   uiGroup: {fileID: 1088003665}
   buttonHighlight: {fileID: 1858745181}
   transitionText: {fileID: 233708059}

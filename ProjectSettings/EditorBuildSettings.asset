@@ -26,6 +26,18 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/BusMinigame2.unity
     guid: 10842a8f7e1f09c4b998779ae862e168
+  - enabled: 1
+    path: Assets/Scenes/Cutscene-1.unity
+    guid: fdb02f588cf90984a8806c5daa2f68aa
+  - enabled: 1
+    path: Assets/Scenes/Cutscene-3.unity
+    guid: 0428fbfc8f4e44549b807438dd3dc9ca
+  - enabled: 1
+    path: Assets/Scenes/Cutscene-4.unity
+    guid: 36faeaf498a9fe14c910d2f356312ab1
+  - enabled: 1
+    path: Assets/Scenes/Cutscene-5.unity
+    guid: 3350aafc277a5d34b8f9628ea9980985
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
