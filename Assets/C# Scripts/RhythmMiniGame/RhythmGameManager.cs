@@ -1,51 +1,84 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro; 
+using System.Collections;
 
 public class RhythmGameManager : MonoBehaviour
 {
-
+    [Header("Audio & BeatScroller")]
     public AudioSource theMusic;
-
+    public BeatScroller theBS;
     public bool startPlaying;
 
-    public BeatScroller theBS;
-
-    public static RhythmGameManager instance;
-
+    [Header("Score")]
     public int currentScore;
     public int scorePerNote = 100;
     public int scorePerGoodNote = 150;
     public int scorePerPerfectNote = 200;
+    public TextMeshProUGUI scoreText; // main score display
 
-    public Text scoreText;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    [Header("End Game UI")]
+    public Image fadeImage;          // full-screen black image
+    public float fadeDuration = 1.5f;
+    public GameObject endPopup;      // popup panel at the end
+    public TextMeshProUGUI finalScoreText; // text on the popup showing final score
+
+    [Header("Instructions Panel")]
+    public StartInfoPanel startInfoPanel; // your start info panel
+
+    private bool gameEnding = false;
+
+    public static RhythmGameManager instance;
+
     void Start()
     {
         instance = this;
-        scoreText.text = "Score: 0";
+
+        if (scoreText != null)
+            scoreText.text = "Score: 0";
+
+        if (fadeImage != null)
+        {
+            Color c = fadeImage.color;
+            c.a = 0f;
+            fadeImage.color = c;
+        }
+
+        if (endPopup != null)
+            endPopup.SetActive(false);
     }
 
-    // Update is called once per frame
     void Update()
     {
-        if(!startPlaying)
+        // Start the game only when the start panel is closed
+        if (!startPlaying)
         {
-            if(Input.anyKeyDown)
+            if (startInfoPanel == null || !startInfoPanel.isActiveAndEnabled)
             {
-                startPlaying = true;
-                // theBS.hasStarted = true;
-                theMusic.Play();
-                if (theBS != null) theBS.Begin();
+                StartGame();
             }
+        }
+
+        // End game check
+        if (startPlaying && !theMusic.isPlaying && !gameEnding)
+        {
+            gameEnding = true;
+            StartCoroutine(EndGameSequence());
         }
     }
 
-    public void NoteHit()
+    private void StartGame()
     {
-        // Debug.Log("Hit On Time");
+        startPlaying = true;
+        theMusic.Play();
+        if (theBS != null) theBS.Begin();
+    }
 
-        // currentScore += scorePerNote;
-        scoreText.text = "Score: " + currentScore;
+    #region Score Methods
+    void NoteHit()
+    {
+        if (scoreText != null)
+            scoreText.text = "Score: " + currentScore;
     }
 
     public void NormalHit()
@@ -68,6 +101,48 @@ public class RhythmGameManager : MonoBehaviour
 
     public void NoteMissed()
     {
-        // Debug.Log("Missed Note");
+        // Optional: handle misses
     }
+    #endregion
+
+    #region End Game
+    IEnumerator EndGameSequence()
+    {
+        // Fade to black
+        if (fadeImage != null)
+        {
+            float t = 0f;
+            Color c = fadeImage.color;
+
+            while (t < fadeDuration)
+            {
+                t += Time.deltaTime;
+                c.a = Mathf.Lerp(0f, 1f, t / fadeDuration);
+                fadeImage.color = c;
+                yield return null;
+            }
+
+            c.a = 1f;
+            fadeImage.color = c;
+        }
+
+        // Set final score in the popup
+        if (finalScoreText != null)
+            finalScoreText.text = "Final Score: " + currentScore;
+
+        // Show popup
+        if (endPopup != null)
+            endPopup.SetActive(true);
+    }
+
+    // Call this from your popup button to close the game
+    public void QuitGame()
+    {
+        Application.Quit();
+
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#endif
+    }
+    #endregion
 }

@@ -286,8 +286,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0694421554689384eb9c05600eebe2c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nextSceneFile: {fileID: 102900000, guid: 99c9720ab356a0642a771bea13969a05, type: 3}
-  nextSceneName: OverworldScene
+  nextSceneFile: {fileID: 102900000, guid: fdb02f588cf90984a8806c5daa2f68aa, type: 3}
+  nextSceneName: Cutscene-1
   gameSpeed: 10
   rockPrefab: {fileID: 6598287574180225493, guid: 72257029456cf3a46aa1f36dbec11be9, type: 3}
   gameDuration: 30
@@ -298,6 +298,7 @@ MonoBehaviour:
   winPanel: {fileID: 1348322708}
   progressSlider: {fileID: 1783334776}
   distanceText: {fileID: 2026622600}
+  overworldSpawnPosition: {x: 0, y: 0, z: 0}
 --- !u!4 &331198130
 Transform:
   m_ObjectHideFlags: 0
