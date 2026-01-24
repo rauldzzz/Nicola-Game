@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 public class CutsceneLoader : MonoBehaviour
 {
     public VideoPlayer videoPlayer;
+    public string sceneToLoad;
 
     void Start()
     {
