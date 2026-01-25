@@ -3,27 +3,43 @@ using UnityEngine;
 public class RhythmButtonController : MonoBehaviour
 {
     private SpriteRenderer theSR;
+
     public Sprite defaultImage;
     public Sprite pressedImage;
 
-    public KeyCode keyToPress;
+    public KeyCode[] keysToPress;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         theSR = GetComponent<SpriteRenderer>();
+        theSR.sprite = defaultImage;
     }
 
-    // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(keyToPress))
+        bool anyKeyDown = false;
+        bool anyKeyHeld = false;
+
+        foreach (KeyCode key in keysToPress)
         {
-            theSR.sprite = pressedImage;   
+            if (Input.GetKeyDown(key))
+                anyKeyDown = true;
+
+            if (Input.GetKey(key))
+                anyKeyHeld = true;
         }
-        if (Input.GetKeyUp(keyToPress))
+
+        // If any assigned key was just pressed
+        if (anyKeyDown)
+        {
+            theSR.sprite = pressedImage;
+        }
+
+        // If none of the assigned keys are held anymore
+        if (!anyKeyHeld)
         {
             theSR.sprite = defaultImage;
         }
     }
 }
+

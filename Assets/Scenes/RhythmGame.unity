@@ -742,7 +742,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   defaultImage: {fileID: 21300000, guid: ed2984e24d5df6f46a80ead6ad2964fa, type: 3}
   pressedImage: {fileID: 21300000, guid: 8f47ff751b3bdec48862adf0100c74fa, type: 3}
-  keyToPress: 107
+  keysToPress: 130100006b000000
 --- !u!212 &680675899
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1152,7 +1152,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   defaultImage: {fileID: 21300000, guid: 1bbda9210988dfd4db252a09838d254f, type: 3}
   pressedImage: {fileID: 21300000, guid: cacc39dd2a4e88a43aadeddd73e9b1e2, type: 3}
-  keyToPress: 102
+  keysToPress: 1101000066000000
 --- !u!212 &979961083
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1507,7 +1507,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   defaultImage: {fileID: 21300000, guid: c3c13b1f8baa5dd4a86d3dc186668178, type: 3}
   pressedImage: {fileID: 21300000, guid: 2d10ec486261df445b73774ff82f1b69, type: 3}
-  keyToPress: 106
+  keysToPress: 6a00000011010000
 --- !u!212 &1642901215
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1814,6 +1814,16 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: QuitGame
       objectReference: {fileID: 0}
+    - target: {fileID: 7217949770389434019, guid: a15fc44e4ff340b41a4781772f8992c7, type: 3}
+      propertyPath: m_text
+      value: "KEYS:\nD / Left arrow: \t\tBlue\nF / Down arrow: \tRed\nJ / Up Arrow:
+        \t\tGreen\nK / Right Arrow: \tYellow\n\nINFO:\nThat\u2019s it, you earned
+        your Certificate! \nYour life in Hagenberg officially begins now. Time to
+        put those reflexes to the test.\n\nOBJECTIVE:\nPress the key that matches
+        the arrow\u2019s color exactly when the arrow overlaps the field to score
+        points.\nThe better your timing, the higher your score. Try to rack up as
+        many points as possible!\n\nHave fun!!!"
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2096,7 +2106,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   defaultImage: {fileID: 21300000, guid: ad187f74f2d0cc4499f39a0267b9eda8, type: 3}
   pressedImage: {fileID: 21300000, guid: 18bf226de2d59284e904c26430f659c9, type: 3}
-  keyToPress: 100
+  keysToPress: 6400000014010000
 --- !u!212 &2035413038
 SpriteRenderer:
   m_ObjectHideFlags: 0

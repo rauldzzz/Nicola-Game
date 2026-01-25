@@ -102,7 +102,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5ef1a06621cd6e40af43b3c7a9d056f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  keyToPress: 100
+  keysToPress: 1401000064000000
   normalThreshold: 0.25
   goodThreshold: 0.05
   hitEffect: {fileID: 7176583851097003922, guid: 99c72612c17a15544b3755a532ca8185, type: 3}
