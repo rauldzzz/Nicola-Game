@@ -46,7 +46,7 @@ Light-hearted, playful, humorous, and informative.
 
 ---
 
-## ▶ Running the Game (Build)
+## Running the Game (Build)
 
 1. Extract the ZIP archive
 2. Open the folder `Nicola Game Prototype`
