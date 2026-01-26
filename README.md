@@ -59,7 +59,7 @@ Light-hearted, playful, humorous, and informative.
 
 ---
 
-## 🧑‍💻 Continuing Development (Unity)
+## Continuing Development (Unity)
 
 1. Clone the repository
 2. Open Unity Hub
@@ -70,7 +70,7 @@ Light-hearted, playful, humorous, and informative.
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 Assets/
@@ -88,7 +88,7 @@ Packages/
 
 ---
 
-## 🚧 TODO
+## TODO
 
 * [ ] Add a slideshow showing student life in Hagenberg in the rhythm game
 * [ ] Ensure cutscenes and certain triggers are not retriggered in the overworld
@@ -105,14 +105,14 @@ Packages/
 
 ---
 
-## 📜 License
+## License
 
 This project is currently intended for educational and development purposes only.
 The license may be updated or changed in the future.
 
 ---
 
-## ℹ Notes
+## Notes
 
 * The folders `Library/`, `Temp/`, and `Logs/` are **not** included in the repository
 * Using a Unity `.gitignore` file is strongly recommended
