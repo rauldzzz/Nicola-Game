@@ -1,17 +1,19 @@
 using UnityEngine;
 
+/*
+ * EffectObject
+ * ------------
+ * Simple object that destroys itself after a set lifetime.
+ * Can be used for particle effects, visual feedback, or temporary objects.
+ */
+
 public class EffectObject : MonoBehaviour
 {
-    public float lifetime = 1.0f;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+    public float lifetime = 1.0f; // How long before this object is destroyed
 
-    // Update is called once per frame
     void Update()
     {
+        // Destroy the object after its lifetime has passed
         Destroy(gameObject, lifetime);
     }
 }

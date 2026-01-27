@@ -2,22 +2,37 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+/*
+ * RoomGenerator
+ * -------------
+ * Procedurally generates a dungeon-like map using RoomData prefabs.
+ * - Places start room, normal rooms, required special rooms, end room, and dead-ends
+ * - Tracks occupied grid cells to prevent overlapping
+ * - Connects rooms via entrances
+ * - Spawns player and enemy prefabs
+ */
 public class RoomGenerator : MonoBehaviour
 {
     [Header("Room Data")]
-    public RoomData startRoom;
-    public RoomData[] normalRooms;
-    public RoomData[] endRooms;
-    public RoomData[] deadEndRooms;
+    public RoomData startRoom;          // Starting room of the map
+    public RoomData[] normalRooms;      // Regular rooms that can appear in the map
+    public RoomData[] endRooms;         // Special end rooms
+    public RoomData[] deadEndRooms;     // Dead-end rooms to fill open entrances
 
     [Header("Prefabs")]
-    public Transform playerPrefab;
-    public Transform enemyPrefab;
+    public Transform playerPrefab;      // Player spawn prefab
+    public Transform enemyPrefab;       // Enemy prefab to spawn in rooms
 
+    // Tracks which grid cells are occupied to prevent overlaps
     private Dictionary<Vector2Int, Room> occupiedCells = new();
+
+    // All rooms instantiated in this map
     private List<Room> allRooms = new();
+
+    // Graph connecting rooms (key = room, value = adjacent rooms)
     private Dictionary<Room, List<Room>> roomGraph = new();
 
+    // Directions used for entrances
     private readonly Entrance.Direction[] directions =
     {
         Entrance.Direction.Up,
@@ -31,6 +46,7 @@ public class RoomGenerator : MonoBehaviour
         GenerateMap();
     }
 
+    // Main map generation logic
     void GenerateMap()
     {
         occupiedCells.Clear();
@@ -46,6 +62,7 @@ public class RoomGenerator : MonoBehaviour
         allRooms.Add(start);
         roomGraph[start] = new List<Room>();
 
+        // Find all open entrances of start room
         List<(Room room, Entrance.Direction dir)> openEntrances = new();
         foreach (var dir in directions)
         {
@@ -54,7 +71,7 @@ public class RoomGenerator : MonoBehaviour
                 openEntrances.Add((start, dir));
         }
 
-        // Track which rooms (3-6) have been placed
+        // Track required rooms 3-6 to ensure placement
         HashSet<string> requiredRooms = new() { "Room3Data", "Room4Data", "Room5Data", "Room6Data" };
 
         // 2. Place normal rooms
@@ -77,6 +94,7 @@ public class RoomGenerator : MonoBehaviour
 
                     if (requiredRooms.Contains(data.name)) requiredRooms.Remove(data.name);
 
+                    // Add new open entrances from the placed room
                     foreach (var d in directions)
                     {
                         var e = placed.GetEntrance(d);
@@ -145,16 +163,17 @@ public class RoomGenerator : MonoBehaviour
             }
         }
 
-        // 5. Connect entrances
+        // 5. Connect entrances (currently empty, may handle logic later)
         ConnectEntrances();
 
         // 5b. Fill remaining open entrances with dead-ends
         FillRemainingOpenEntrancesWithDeadEnds();
 
-        // 6. Spawn entities
+        // 6. Spawn player and enemy entities
         SpawnEntities();
     }
 
+    // Finds the room furthest away from the start using BFS
     Room GetFurthestRoomFromStart(Room start)
     {
         Dictionary<Room, int> distances = new();
@@ -192,6 +211,7 @@ public class RoomGenerator : MonoBehaviour
         return furthest;
     }
 
+    // Attempts to place an end room connected to a given room
     void PlaceEndRoomAt(Room parent)
     {
         foreach (var dir in directions)
@@ -236,6 +256,7 @@ public class RoomGenerator : MonoBehaviour
 
     #region Core placement & Helpers
 
+    // Tries to place a room prefab at a parent's open entrance
     bool TryPlaceNextRoomAtOpenEntrance(Room parent, Entrance.Direction parentDir, RoomData roomData, out Room placed)
     {
         placed = null;
@@ -267,9 +288,11 @@ public class RoomGenerator : MonoBehaviour
         return true;
     }
 
+    // Converts world position to bottom-left grid coordinates for the room
     Vector2Int GetBottomLeftGridPos(Room room, Vector3 pos) =>
         new(Mathf.FloorToInt(pos.x - room.roomWorldSize.x / 2f), Mathf.FloorToInt(pos.y - room.roomWorldSize.y / 2f));
 
+    // Returns all grid cells occupied by a room given its bottom-left position
     List<Vector2Int> GetOccupiedCells(Room room, Vector2Int bl)
     {
         List<Vector2Int> cells = new();
@@ -279,6 +302,7 @@ public class RoomGenerator : MonoBehaviour
         return cells;
     }
 
+    // Checks if a room can be placed at a given position
     bool CanPlaceRoom(Room room, Vector3 pos)
     {
         Vector2Int bl = GetBottomLeftGridPos(room, pos);
@@ -287,17 +311,20 @@ public class RoomGenerator : MonoBehaviour
         return true;
     }
 
+    // Marks grid cells as occupied by the given room
     void MarkRoomCells(Room room, Vector2Int bl)
     {
         foreach (var c in GetOccupiedCells(room, bl))
             occupiedCells[c] = room;
     }
 
+    // Returns the opposite of a given direction
     Entrance.Direction OppositeDirection(Entrance.Direction d) =>
         d == Entrance.Direction.Up ? Entrance.Direction.Down :
         d == Entrance.Direction.Down ? Entrance.Direction.Up :
         d == Entrance.Direction.Left ? Entrance.Direction.Right : Entrance.Direction.Left;
 
+    // Simple in-place list shuffling
     void ShuffleList<T>(List<T> list)
     {
         for (int i = list.Count - 1; i > 0; i--)
@@ -309,6 +336,7 @@ public class RoomGenerator : MonoBehaviour
 
     void ConnectEntrances() { }
 
+    // Spawns player and enemies at the designated spawn points
     void SpawnEntities()
     {
         if (allRooms.Count == 0) return;
@@ -331,35 +359,34 @@ public class RoomGenerator : MonoBehaviour
         }
     }
 
+    // Iterates remaining open entrances and fills them with dead-end rooms
     void FillRemainingOpenEntrancesWithDeadEnds()
-{
-    // Iterate over a copy of allRooms to avoid modifying the collection during iteration
-    List<Room> roomsToCheck = new List<Room>(allRooms);
-
-    foreach (var room in roomsToCheck)
     {
-        foreach (var dir in directions)
+        List<Room> roomsToCheck = new List<Room>(allRooms);
+
+        foreach (var room in roomsToCheck)
         {
-            var entrance = room.GetEntrance(dir);
-            if (entrance == null || !entrance.gameObject.activeSelf) continue;
-
-            // Find a dead-end that has a matching entrance
-            RoomData deadEndData = deadEndRooms.FirstOrDefault(d =>
+            foreach (var dir in directions)
             {
-                Room r = d.prefab.GetComponent<Room>();
-                return r.GetEntrance(OppositeDirection(dir)) != null;
-            });
+                var entrance = room.GetEntrance(dir);
+                if (entrance == null || !entrance.gameObject.activeSelf) continue;
 
-            if (deadEndData == null) continue;
+                RoomData deadEndData = deadEndRooms.FirstOrDefault(d =>
+                {
+                    Room r = d.prefab.GetComponent<Room>();
+                    return r.GetEntrance(OppositeDirection(dir)) != null;
+                });
 
-            if (TryPlaceNextRoomAtOpenEntrance(room, dir, deadEndData, out Room placed))
-            {
-                placed.type = RoomType.DeadEnd;
-                allRooms.Add(placed); // safe because we’re iterating over the copy
+                if (deadEndData == null) continue;
+
+                if (TryPlaceNextRoomAtOpenEntrance(room, dir, deadEndData, out Room placed))
+                {
+                    placed.type = RoomType.DeadEnd;
+                    allRooms.Add(placed); // safe because we iterate over a copy
+                }
             }
         }
     }
-}
 
     #endregion
 }

@@ -2,23 +2,35 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
+/*
+ * RoomFound
+ * ----------
+ * Handles the win condition for the minigame.
+ * - When the player enters the trigger, the level is marked as complete
+ * - Optional overworld position is saved
+ * - Game is paused and a win popup UI is displayed
+ * - Player can return to the overworld from the popup
+ */
 public class RoomFound : MonoBehaviour
 {
     [Header("UI Settings")]
-    public GameObject winPopupPrefab;
+    public GameObject winPopupPrefab; // Prefab for the win UI popup
 
     [Header("Overworld Settings")]
     [Tooltip("Optional: set this to override the overworld spawn position")]
-    public Vector3 overworldSpawnPosition;
+    public Vector3 overworldSpawnPosition; // Position where player should appear in overworld
 
     [Header("Level Settings")]
-    public string levelName = "FYRMinigame"; // unique identifier for this minigame
+    public string levelName = "FYRMinigame"; // Unique identifier for this minigame
 
-    private bool hasWon = false;
+    private bool hasWon = false; // Ensures win is triggered only once
     
     private void OnTriggerEnter2D(Collider2D other)
     {
+        // Only trigger once
         if (hasWon) return;
+
+        // Check if player entered
         if (other.CompareTag("Player"))
         {
             TriggerWin();
@@ -29,16 +41,14 @@ public class RoomFound : MonoBehaviour
     {
         hasWon = true;
 
-        // Mark the level as completed
+        // Save level completion and overworld position
         if (SaveManager.Instance != null)
         {
             SaveManager.Instance.CompleteLevel(levelName);
-
-            // Directly set the overworld position
             SaveManager.Instance.SaveOverworldPosition(overworldSpawnPosition);
         }
 
-        // Freeze the game
+        // Pause the game
         Time.timeScale = 0f;
 
         // Show popup UI
@@ -55,9 +65,10 @@ public class RoomFound : MonoBehaviour
         }
     }
 
+    // Called from the popup button to return to the overworld
     private void ReturnToOverworld()
     {
-        Time.timeScale = 1f; // unfreeze
+        Time.timeScale = 1f; // unpause
         SceneManager.LoadScene("OverworldScene");
     }
 }

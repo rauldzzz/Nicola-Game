@@ -1,38 +1,51 @@
 using UnityEngine;
 
+/*
+ * BusController
+ * -------------
+ * Handles horizontal lane switching for the bus during gameplay and
+ * automatic movement during the arrival cutscene.
+ * Also detects collisions with obstacles and triggers the death popup.
+ */
 public class BusController : MonoBehaviour
 {
-    public float laneDistance = 1.5f; 
+    // Distance from the center to each driving lane
+    public float laneDistance = 1.5f;
+
+    // Speed used for smooth lane switching
     public float switchSpeed = 10f;
 
+    // X position the bus should currently move towards
     private float targetX;
+
+    // Reserved for lane state tracking (currently unused)
     private bool isRightLane = false;
 
+    // When true, player input is disabled and the bus moves automatically
     private bool isCutscene = false;
 
+    // Reference to the UI manager that handles the death popup
     private DeathPopupManager deathPopupManager;
 
     void Start()
     {
+        // Set the initial lane based on the starting X position
         if (transform.position.x > 0)
         {
-            targetX = laneDistance; // Start in Right Lane
+            targetX = laneDistance;
         }
         else
         {
-            targetX = -laneDistance; // Start in Left Lane
+            targetX = -laneDistance;
         }
 
-        // Find the DeathPopupManager in the scene
+        // Locate the DeathPopupManager in the scene (if present)
         deathPopupManager = Object.FindFirstObjectByType<DeathPopupManager>();
-        if (deathPopupManager == null)
-        {
-            Debug.LogWarning("DeathPopupManager not found in the scene!");
-        }
     }
 
     void Update()
     {
+        // Normal player-controlled movement
         if (!isCutscene)
         {
             if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D))
@@ -44,22 +57,20 @@ public class BusController : MonoBehaviour
                 targetX = -laneDistance;
             }
 
-            // Normal movement (X axis only, Y stays at -3)
+            // Only move on the X axis; Y is locked to the road height
             Vector3 targetPos = new Vector3(targetX, -5f, transform.position.z);
             transform.position = Vector3.Lerp(transform.position, targetPos, switchSpeed * Time.deltaTime);
         }
-        // 2. Cutscene Movement (Auto-drive to station)
+        // Cutscene movement (arrival at the station)
         else
         {
-            // Target: Right Lane (laneDistance) and Middle of Screen (Y = 0)
+            // Move to the right lane and center vertically
             Vector3 stationPos = new Vector3(laneDistance, 0f, transform.position.z);
-
-            // Move smoothly towards station (slower speed looks nicer for parking)
             transform.position = Vector3.Lerp(transform.position, stationPos, 2f * Time.deltaTime);
         }
     }
 
-    // Call this to trigger the ending
+    // Enables cutscene mode and disables player input
     public void StartArrivalSequence()
     {
         isCutscene = true;
@@ -67,19 +78,16 @@ public class BusController : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        // Check for collision with "Activator" (rock, obstacle, etc.)
+        // "Activator" represents obstacles that cause a game over
         if (other.CompareTag("Activator"))
         {
-            Debug.Log("Hit a rock! Game Over.");
-
-            // Show the death popup if the manager exists
             if (deathPopupManager != null)
             {
                 deathPopupManager.ShowDeathPopup();
             }
             else
             {
-                // Fallback: freeze game if popup manager is missing
+                // Safety fallback if the UI manager is missing
                 Time.timeScale = 0;
             }
         }

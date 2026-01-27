@@ -1,5 +1,12 @@
 using UnityEngine;
 
+/*
+ * NoteMovement
+ * ------------
+ * Moves a note from its spawn position to the hit line over a set travel time.
+ * - Initialized externally with start and target positions and travel duration.
+ * - Destroys itself shortly after reaching the target.
+ */
 
 public class NoteMovement : MonoBehaviour
 {
@@ -10,13 +17,16 @@ public class NoteMovement : MonoBehaviour
     private float speed = 0f;
     private bool initialized = false;
 
+    // Set up the note's movement parameters
     public void Initialize(Vector3 spawnPosition, Vector3 hitPosition, float noteTravelTime)
     {
         startPos = spawnPosition;
         targetPos = hitPosition;
         travelTime = Mathf.Max(0.0001f, noteTravelTime);
+
         float distance = Vector3.Distance(startPos, targetPos);
         speed = distance / travelTime;
+
         transform.position = startPos;
         elapsed = 0f;
         initialized = true;
@@ -26,15 +36,16 @@ public class NoteMovement : MonoBehaviour
     {
         if (!initialized) return;
 
-        // Move toward target using MoveTowards for stable, constant speed
+        // Move the note toward the target at a constant speed
         float step = speed * Time.deltaTime;
         transform.position = Vector3.MoveTowards(transform.position, targetPos, step);
 
         elapsed += Time.deltaTime;
-        // Optionally destroy when it reaches the target
+
+        // Destroy the note when it reaches the target or exceeds expected travel time
         if (Vector3.Distance(transform.position, targetPos) <= 0.01f || elapsed >= travelTime + 0.5f)
         {
-            // When hits the hitline zone without being pressed, the NoteObject's trigger should handle misses
+            // The trigger system can handle missed notes separately
             Destroy(gameObject, 0.1f);
         }
     }

@@ -1,10 +1,19 @@
 using UnityEngine;
 using TMPro;
 
+/*
+ * OverworldCoinManager
+ * --------------------
+ * Updates the UI to show the total coins collected in the overworld.
+ * - Reads the coin count from SaveManager.
+ * - Updates on Start and whenever the component is enabled.
+ * - Was used in an older version of the overworld scenes.
+ */
+
 public class OverworldCoinManager : MonoBehaviour
 {
     [Header("UI Settings")]
-    public TMP_Text coinText; // Assign your UI Text element here
+    public TMP_Text coinText; // Reference to the UI Text element for coins
 
     private void Start()
     {
@@ -21,17 +30,16 @@ public class OverworldCoinManager : MonoBehaviour
     {
         if (coinText == null)
         {
-            // Esto ayudará a ver si realmente olvidaste la asignación
-            Debug.LogError("ERROR CRÍTICO: coinText no está asignado en el Inspector en el OverworldCoinManager.");
+            // Helps detect if the UI Text reference was forgotten
+            Debug.LogError("OverworldCoinManager: coinText not assigned in the Inspector.");
             return;
         }
-        // Update UI whenever the overworld scene loads
+
+        // Refresh UI whenever the component is enabled
         UpdateUI();
     }
 
-    /// <summary>
-    /// Call this whenever coins change
-    /// </summary>
+    // Update the coin counter text
     public void UpdateUI()
     {
         coinText.text = SaveManager.Instance.totalCoins.ToString();

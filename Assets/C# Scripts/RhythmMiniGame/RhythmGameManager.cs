@@ -3,6 +3,16 @@ using UnityEngine.UI;
 using TMPro; 
 using System.Collections;
 
+/*
+ * RhythmGameManager
+ * -----------------
+ * Manages core gameplay for the rhythm game.
+ * - Starts and stops the music and beat scroller.
+ * - Tracks score and updates UI.
+ * - Handles end-of-song sequence with fade and popup.
+ * - Interfaces with a start info panel to delay gameplay until ready.
+ */
+
 public class RhythmGameManager : MonoBehaviour
 {
     [Header("Audio & BeatScroller")]
@@ -15,16 +25,16 @@ public class RhythmGameManager : MonoBehaviour
     public int scorePerNote = 100;
     public int scorePerGoodNote = 150;
     public int scorePerPerfectNote = 200;
-    public TextMeshProUGUI scoreText; // main score display
+    public TextMeshProUGUI scoreText;
 
     [Header("End Game UI")]
-    public Image fadeImage;          // full-screen black image
+    public Image fadeImage;           // Full-screen black for fade effect
     public float fadeDuration = 1.5f;
-    public GameObject endPopup;      // popup panel at the end
-    public TextMeshProUGUI finalScoreText; // text on the popup showing final score
+    public GameObject endPopup;       // Panel to show final score
+    public TextMeshProUGUI finalScoreText;
 
     [Header("Instructions Panel")]
-    public StartInfoPanel startInfoPanel; // your start info panel
+    public StartInfoPanel startInfoPanel;
 
     private bool gameEnding = false;
 
@@ -37,6 +47,7 @@ public class RhythmGameManager : MonoBehaviour
         if (scoreText != null)
             scoreText.text = "Score: 0";
 
+        // Ensure fade starts fully transparent
         if (fadeImage != null)
         {
             Color c = fadeImage.color;
@@ -50,16 +61,14 @@ public class RhythmGameManager : MonoBehaviour
 
     void Update()
     {
-        // Start the game only when the start panel is closed
+        // Wait until start panel is closed before starting gameplay
         if (!startPlaying)
         {
             if (startInfoPanel == null || !startInfoPanel.isActiveAndEnabled)
-            {
                 StartGame();
-            }
         }
 
-        // End game check
+        // Check if music has finished to trigger end sequence
         if (startPlaying && !theMusic.isPlaying && !gameEnding)
         {
             gameEnding = true;
@@ -101,14 +110,14 @@ public class RhythmGameManager : MonoBehaviour
 
     public void NoteMissed()
     {
-        // Optional: handle misses
+        // Could implement penalty or feedback here
     }
     #endregion
 
     #region End Game
     IEnumerator EndGameSequence()
     {
-        // Fade to black
+        // Fade screen to black over time
         if (fadeImage != null)
         {
             float t = 0f;
@@ -126,16 +135,15 @@ public class RhythmGameManager : MonoBehaviour
             fadeImage.color = c;
         }
 
-        // Set final score in the popup
+        // Update final score on popup
         if (finalScoreText != null)
             finalScoreText.text = "Final Score: " + currentScore;
 
-        // Show popup
         if (endPopup != null)
             endPopup.SetActive(true);
     }
 
-    // Call this from your popup button to close the game
+    // Called by end popup button to quit
     public void QuitGame()
     {
         Application.Quit();

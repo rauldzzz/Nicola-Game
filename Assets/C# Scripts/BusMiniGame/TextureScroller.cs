@@ -1,29 +1,39 @@
 using UnityEngine;
 
+/*
+ * TextureScroller
+ * ----------------
+ * Scrolls the texture of a material vertically to create the illusion
+ * of movement based on the current game speed.
+ */
 public class TextureScroller : MonoBehaviour
 {
     private Renderer rend;
-    private float currentOffset = 0f; // We track the offset ourselves now
+    
+    // Tracks the cumulative offset of the texture to apply smooth scrolling
+    private float currentOffset = 0f;
 
     void Start()
     {
+        // Cache the Renderer component for efficiency
         rend = GetComponent<Renderer>();
     }
 
     void Update()
     {
+        // Get the current game speed from the BusGameManager
         float currentSpeed = BusGameManager.Instance.gameSpeed;
 
-        // Calculate how much to move THIS frame only
+        // Adjust scrolling speed relative to the object's scale
         float textureSpeed = currentSpeed / transform.localScale.y;
 
-        // Add this tiny movement to our total offset
+        // Increment the offset based on this frame's movement
         currentOffset += textureSpeed * Time.deltaTime;
 
-        // Keep the number between 0 and 1 so it doesn't get too big over time
+        // Wrap offset to stay between 0 and 1 to avoid floating-point overflow
         currentOffset = currentOffset % 1;
 
-        // Apply it
+        // Apply the offset to the material's main texture
         rend.material.mainTextureOffset = new Vector2(0, currentOffset);
     }
 }

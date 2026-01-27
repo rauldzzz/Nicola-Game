@@ -1,24 +1,33 @@
 using UnityEngine;
 using System.Collections;
 
+/*
+ * GridMovementHold
+ * ----------------
+ * Handles smooth grid-based movement with held input.
+ * - Moves the player tile by tile on a grid.
+ * - Supports input buffering for responsive movement.
+ * - Animates walking and idle states.
+ * - Prevents movement into obstacles.
+ * - Was used in an older version of the overworld scenes.
+ * - Now its used in the FYR minigame.
+ */
+
 public class GridMovementHold : MonoBehaviour
 {
     [Header("Grid Settings")]
-    public float gridSize = 1f;              // Size of one grid tile
-    public float moveSpeed = 5f;             // Movement speed between tiles
+    public float gridSize = 1f;
+    public float moveSpeed = 5f;
+    public float inputBufferDistance = 0.5f; // How close to target we can accept new input
 
-    // Distance before reaching the target where new input is accepted
-    public float inputBufferDistance = 0.5f;
-
-    private Vector3 targetPosition;          // Current target grid position
-    public bool isMoving = false;             // Is the player currently moving
-    private Vector2 inputDirection;           // Current movement direction
-    private Vector2 lastMoveDirection = Vector2.down; // Last direction used (for idle)
+    private Vector3 targetPosition;
+    public bool isMoving = false;
+    private Vector2 inputDirection;
+    private Vector2 lastMoveDirection = Vector2.down;
 
     [Header("Animation")]
     public Animator animator;
 
-    // Expose movement direction for other scripts (attack, interaction, etc.)
     public Vector2 InputDirection => inputDirection;
 
     void Start()
@@ -26,10 +35,9 @@ public class GridMovementHold : MonoBehaviour
         if (animator == null)
             animator = GetComponent<Animator>();
 
-        // Snap the player to the nearest grid position on start
+        // Snap player to nearest grid at start
         float snappedX = Mathf.Round(transform.position.x / gridSize) * gridSize;
         float snappedY = Mathf.Round(transform.position.y / gridSize) * gridSize;
-
         Vector3 snappedPosition = new Vector3(snappedX, snappedY, transform.position.z);
 
         transform.position = snappedPosition;
@@ -38,7 +46,7 @@ public class GridMovementHold : MonoBehaviour
 
     void Update()
     {
-        // Read continuous movement input
+        // Read directional input
         Vector2 currentInput = Vector2.zero;
         if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow)) currentInput = Vector2.up;
         else if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow)) currentInput = Vector2.down;
@@ -47,18 +55,15 @@ public class GridMovementHold : MonoBehaviour
 
         if (currentInput != Vector2.zero)
         {
-            // Check how close we are to the current target tile
+            // Allow new movement if player is stopped or close enough to target
             float distToTarget = Vector3.Distance(transform.position, targetPosition);
             bool nearTarget = distToTarget <= inputBufferDistance;
 
-            // Allow new movement if stopped or almost at the target
             if (!isMoving || nearTarget)
             {
-                // Prevent repeating the same move unnecessarily
+                // Only try to move if input changed or not already moving
                 if (currentInput != inputDirection || !isMoving)
-                {
                     TryMove(currentInput);
-                }
             }
         }
 
@@ -67,24 +72,20 @@ public class GridMovementHold : MonoBehaviour
 
     private void TryMove(Vector2 dir)
     {
-        // Calculate the next grid position
         Vector3 nextPos = targetPosition + new Vector3(dir.x, dir.y, 0) * gridSize;
 
-        // Check if the target tile is blocked
+        // Don't move into obstacles
         Collider2D hit = Physics2D.OverlapCircle(nextPos, 0.2f, LayerMask.GetMask("Obstacles"));
-
         if (hit == null)
         {
-            // Stop current movement to allow smooth direction changes
+            // Stop current movement so direction can change smoothly
             if (isMoving)
                 StopAllCoroutines();
 
-            // Store movement direction
             inputDirection = dir;
             lastMoveDirection = dir;
             targetPosition = nextPos;
 
-            // Start moving towards the new tile
             StartCoroutine(MoveToPosition(nextPos));
         }
     }
@@ -93,22 +94,18 @@ public class GridMovementHold : MonoBehaviour
     {
         isMoving = true;
 
-        // Smoothly move toward the target tile
+        // Move smoothly to the target tile
         while (Vector3.Distance(transform.position, newPos) > 0.01f)
         {
-            transform.position = Vector3.MoveTowards(
-                transform.position,
-                newPos,
-                moveSpeed * Time.deltaTime
-            );
+            transform.position = Vector3.MoveTowards(transform.position, newPos, moveSpeed * Time.deltaTime);
             yield return null;
         }
 
-        // Snap exactly to grid
+        // Snap exactly to the grid
         transform.position = newPos;
         isMoving = false;
 
-        // Immediately check for held input to continue moving
+        // Check for held input to continue moving immediately
         Vector2 currentInput = Vector2.zero;
         if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow)) currentInput = Vector2.up;
         else if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow)) currentInput = Vector2.down;
@@ -121,18 +118,17 @@ public class GridMovementHold : MonoBehaviour
 
     private void UpdateAnimator(Vector2 currentInput)
     {
-        // Set walking state
         animator.SetBool("IsWalking", isMoving);
 
         if (isMoving)
         {
-            // Update movement direction while walking
+            // Update direction while walking
             animator.SetFloat("InputX", inputDirection.x);
             animator.SetFloat("InputY", inputDirection.y);
         }
         else
         {
-            // Use last movement direction for idle animations
+            // Idle animation uses last direction
             animator.SetFloat("LastInputX", lastMoveDirection.x);
             animator.SetFloat("LastInputY", lastMoveDirection.y);
         }

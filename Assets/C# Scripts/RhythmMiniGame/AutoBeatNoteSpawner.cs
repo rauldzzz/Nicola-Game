@@ -1,5 +1,14 @@
 using UnityEngine;
 
+/*
+ * AutoBeatNoteSpawner
+ * ------------------
+ * Automatically spawns notes in a rhythm game based on the music's BPM.
+ * - Supports optional half- and quarter-beats.
+ * - Each beat can have a chance to spawn a note.
+ * - Notes move toward a hit line over a set travel time.
+ */
+
 public class AutoBeatNoteSpawner : MonoBehaviour
 {
     public AudioSource music;
@@ -7,20 +16,21 @@ public class AutoBeatNoteSpawner : MonoBehaviour
     public float noteTravelTime = 1.5f;
     public float firstBeatTime = 0f;
 
-    public GameObject[] notePrefabs;    
-    public Transform[] spawnPoints;     
-    public Transform hitLine;           
+    public GameObject[] notePrefabs;    // Note prefabs for each lane
+    public Transform[] spawnPoints;     // Spawn points matching the note prefabs
+    public Transform hitLine;           // Target line for the notes
 
     public bool useHalfBeats = false;
     public bool useQuarterBeats = false;
 
-    public float chancePerBeat = 1f; // chance to spawn a note on a beat (1 = every beat)
+    public float chancePerBeat = 1f;   // 1 = always spawn on a beat
 
-    private float beatInterval;   // seconds per beat
-    private float nextSpawnTime;  // absolute song time (seconds) when next note should be spawned
+    private float beatInterval;         // Seconds per beat
+    private float nextSpawnTime;        // Song time when next note should spawn
 
     void Start()
     {
+        // Ensure arrays are set up correctly
         if (notePrefabs == null || notePrefabs.Length == 0 || spawnPoints == null || spawnPoints.Length != notePrefabs.Length)
         {
             Debug.LogError("AutoBeatNoteSpawner: Please assign notePrefabs and spawnPoints of equal length.");
@@ -39,11 +49,13 @@ public class AutoBeatNoteSpawner : MonoBehaviour
 
         float songTime = music.time;
 
+        // Spawn notes when it's time (considering travel time)
         while (songTime >= nextSpawnTime - noteTravelTime)
         {
             if (Random.value <= chancePerBeat)
                 SpawnRandomLane();
 
+            // Adjust interval for half/quarter beats if needed
             float increment = beatInterval;
             if (useQuarterBeats) increment = beatInterval / 4f;
             else if (useHalfBeats) increment = beatInterval / 2f;
@@ -64,16 +76,13 @@ public class AutoBeatNoteSpawner : MonoBehaviour
 
         Vector3 spawnPos = spawnPoints[lane].position;
         GameObject note = Instantiate(notePrefabs[lane], spawnPos, Quaternion.identity);
-        note.transform.SetParent(null); 
+        note.transform.SetParent(null); // Ensure note isn't parented to the spawner
 
+        // Initialize note movement toward hit line
         NoteMovement nm = note.GetComponent<NoteMovement>();
         if (nm != null)
-        {
             nm.Initialize(spawnPos, hitLine != null ? hitLine.position : Vector3.zero, noteTravelTime);
-        }
         else
-        {
             Debug.LogWarning("Spawned note prefab does not contain NoteMovement component.");
-        }
     }
 }

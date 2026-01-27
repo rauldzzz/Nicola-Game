@@ -1,43 +1,49 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-
+/*
+ * Room
+ * ----
+ * Represents a room in the procedural dungeon map.
+ * - Holds references to tilemaps, entrances, and spawn points
+ * - Calculates its size in both grid cells and world units
+ * - Provides utility to access entrances by direction
+ */
 public class Room : MonoBehaviour
 {
     [Header("Tilemaps")]
-    public Tilemap wallTilemap;
+    public Tilemap wallTilemap;        // Tilemap used for room walls
 
     [Header("Entrances")]
-    public Entrance entranceUp;
-    public Entrance entranceDown;
-    public Entrance entranceLeft;
-    public Entrance entranceRight;
+    public Entrance entranceUp;        // Reference to top entrance
+    public Entrance entranceDown;      // Reference to bottom entrance
+    public Entrance entranceLeft;      // Reference to left entrance
+    public Entrance entranceRight;     // Reference to right entrance
 
     [Header("Spawns")]
-    public Transform playerSpawn;
-    public Transform[] enemySpawns;
+    public Transform playerSpawn;      // Player spawn point
+    public Transform[] enemySpawns;    // Enemy spawn points
 
     [Header("Calculated Size")]
-    public Vector2Int roomSize;     // exact size in cells
-    public Vector2 roomWorldSize;   // exact world size in units
+    public Vector2Int roomSize;        // Room size in grid cells (calculated from Tilemap)
+    public Vector2 roomWorldSize;      // Room size in world units
 
-    [HideInInspector] public Vector2Int gridPos; // position on the Map grid
-
-    [HideInInspector] public RoomType type;
+    [HideInInspector] public Vector2Int gridPos; // Bottom-left position in the map grid
+    [HideInInspector] public RoomType type;      // Type of room (Start, Normal, End, DeadEnd, etc.)
 
     void Awake()
     {
         if (wallTilemap != null)
         {
+            // Calculate the room size from the tilemap bounds
             BoundsInt b = wallTilemap.cellBounds;
             roomSize = new Vector2Int(b.size.x, b.size.y);
             roomWorldSize = new Vector2(roomSize.x, roomSize.y);
         }
     }
 
-
     /// <summary>
-    /// Get the entrance in the given direction.
+    /// Returns the Entrance object for a given direction.
     /// </summary>
     public Entrance GetEntrance(Entrance.Direction dir)
     {

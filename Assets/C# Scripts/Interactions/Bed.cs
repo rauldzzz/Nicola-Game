@@ -3,6 +3,16 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
 
+/*
+ * Bed
+ * ---
+ * Handles the player interacting with a bed to trigger a fade-to-black sequence.
+ * - Disables player movement during fade.
+ * - Fires a UnityEvent (OnBedUsed) for custom actions during sleep.
+ * - Fades screen out, holds, then fades back in.
+ * - Prevents multiple uses during one interaction.
+ */
+
 public class Bed : MonoBehaviour, IInteractable
 {
     [Header("Fade Settings")]
@@ -34,7 +44,7 @@ public class Bed : MonoBehaviour, IInteractable
         isFading = true;
         hasBeenUsed = true; // Lock it immediately
 
-        // Freeze player (Using your specific script name)
+        // Freeze player
         PlayerMovement playerMovement = 
             GameObject.FindGameObjectWithTag("Player")?.GetComponent<PlayerMovement>();
         
@@ -44,8 +54,7 @@ public class Bed : MonoBehaviour, IInteractable
         // Fade out
         yield return StartCoroutine(Fade(1f));
 
-        // 🔥 TRIGGER YOUR LIST OF THINGS HERE
-        // In the Inspector, add your "couple of things" to this list
+        // Trigger custom actions
         OnBedUsed?.Invoke();
 
         // Hold black screen
@@ -59,9 +68,6 @@ public class Bed : MonoBehaviour, IInteractable
             playerMovement.enabled = true;
 
         isFading = false;
-
-        // NOW it is safe to turn off the object if you want
-        // gameObject.SetActive(false); 
     }
 
     private IEnumerator Fade(float targetAlpha)

@@ -2,56 +2,56 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
+/*
+ * RespawnManager
+ * --------------
+ * Handles player respawning at the last checkpoint.
+ * - Fades the screen to black, teleports the player, then fades back in.
+ * - Temporarily disables movement and physics during respawn.
+ * - Singleton for easy global access.
+ * - Was used in the 2D platformer minigame.
+ */
+
 public class RespawnManager : MonoBehaviour
 {
     public static RespawnManager Instance; // Singleton reference
 
     [Header("Respawn Settings")]
-    [Tooltip("Fade image used for transition effect (black screen)")]
-    public Image fadeImage;
-
-    [Tooltip("How long the fade in/out takes")]
-    public float fadeDuration = 0.5f;
-
-    [Tooltip("How long the screen stays black before fading back in")]
-    public float holdDuration = 0.3f;
+    public Image fadeImage;       // Black overlay used for fade effect
+    public float fadeDuration = 0.5f; // Time to fade in/out
+    public float holdDuration = 0.3f; // How long the screen stays black
 
     private Transform currentCheckpoint; // Last checkpoint reached
     private bool isRespawning = false;
 
     private void Awake()
     {
+        // Singleton setup
         if (Instance == null)
             Instance = this;
         else
             Destroy(gameObject);
     }
 
-    /// <summary>
-    /// Sets the current respawn position.
-    /// </summary>
+    // Set the current checkpoint for respawning
     public void SetCheckpoint(Transform checkpoint)
     {
         currentCheckpoint = checkpoint;
     }
 
-    /// <summary>
-    /// Begins the respawn process for the player.
-    /// </summary>
+    // Start the respawn process for the player
     public void RespawnPlayer(GameObject player)
     {
         if (!isRespawning && currentCheckpoint != null)
             StartCoroutine(RespawnRoutine(player));
     }
 
-    /// <summary>
-    /// Handles fading, teleporting, and safely restoring movement and physics.
-    /// </summary>
+    // Handles fading, teleporting, and restoring player movement
     private IEnumerator RespawnRoutine(GameObject player)
     {
         isRespawning = true;
 
-        // Disable movement + physics temporarily
+        // Disable movement and physics temporarily
         var rb = player.GetComponent<Rigidbody2D>();
         var movement = player.GetComponent<PlayerMovement2DPolished_Controls>();
 
@@ -61,16 +61,16 @@ public class RespawnManager : MonoBehaviour
         if (rb != null)
         {
             rb.linearVelocity = Vector2.zero;
-            rb.gravityScale = 0f; // Prevent falling while screen fades
+            rb.gravityScale = 0f; // Prevent falling during fade
         }
 
         // Fade to black
         yield return StartCoroutine(Fade(1f));
 
-        // Teleport to the last checkpoint
+        // Move player to checkpoint
         player.transform.position = currentCheckpoint.position;
 
-        // Wait while screen is black
+        // Hold screen black
         yield return new WaitForSeconds(holdDuration);
 
         // Fade back in
@@ -78,16 +78,14 @@ public class RespawnManager : MonoBehaviour
 
         // Re-enable physics and movement
         if (rb != null)
-            rb.gravityScale = 2f; // set this back to your normal gravity value
+            rb.gravityScale = 2f; // Restore normal gravity
         if (movement != null)
             movement.enabled = true;
 
         isRespawning = false;
     }
 
-    /// <summary>
-    /// Smooth fade in/out of the black overlay image.
-    /// </summary>
+    // Smoothly fade the overlay to the target alpha
     private IEnumerator Fade(float targetAlpha)
     {
         fadeImage.gameObject.SetActive(true);

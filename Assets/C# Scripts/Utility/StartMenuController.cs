@@ -4,6 +4,16 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
 
+/*
+ * StartMenuController
+ * -------------------
+ * Handles the start menu behavior, including:
+ * - Initial black screen fade and background music start
+ * - Start/Exit button functionality
+ * - Transition animations (fade UI, move/scale text)
+ * - Scene loading
+ */
+
 public class StartMenuController : MonoBehaviour
 {
     [Header("Scene Settings")]
@@ -32,6 +42,7 @@ public class StartMenuController : MonoBehaviour
 
     void Awake()
     {
+        // Make sure black screen is visible at start
         if (blackScreenGroup != null)
         {
             blackScreenGroup.alpha = 1f;
@@ -49,7 +60,7 @@ public class StartMenuController : MonoBehaviour
 
     private IEnumerator StartupSequence()
     {
-        // Hold black screen
+        // Wait before revealing menu
         yield return new WaitForSeconds(blackScreenHoldTime);
 
         // Fade out black screen
@@ -58,7 +69,7 @@ public class StartMenuController : MonoBehaviour
 
         blackScreenGroup.blocksRaycasts = false;
 
-        // Start music AFTER reveal
+        // Start background music after reveal
         if (backgroundMusic != null)
             backgroundMusic.Play();
     }
@@ -81,18 +92,22 @@ public class StartMenuController : MonoBehaviour
     {
         isTransitioning = true;
 
+        // Disable all buttons to prevent double clicks
         foreach (Button button in GetComponentsInChildren<Button>())
             button.interactable = false;
 
         if (buttonHighlight != null)
             buttonHighlight.SetActive(false);
 
+        // Fade out main UI
         if (uiGroup != null)
             yield return StartCoroutine(FadeCanvasGroup(uiGroup, 1f, 0f, fadeDuration));
 
+        // Fade out music
         if (backgroundMusic != null)
             yield return StartCoroutine(FadeAudio(backgroundMusic, fadeDuration));
 
+        // Animate transition text if assigned
         if (transitionText != null)
         {
             transitionText.alpha = 0f;
@@ -113,6 +128,7 @@ public class StartMenuController : MonoBehaviour
                 yield return null;
             }
 
+            // Hold final position for a moment
             yield return new WaitForSeconds(holdDuration);
 
             elapsed = 0f;
@@ -124,6 +140,7 @@ public class StartMenuController : MonoBehaviour
             }
         }
 
+        // Load next scene
         if (!string.IsNullOrEmpty(sceneToLoad))
             SceneManager.LoadScene(sceneToLoad);
         else

@@ -1,11 +1,22 @@
 using UnityEngine;
 
+/*
+ * NoteObject
+ * ----------
+ * Handles player input for a single note.
+ * - Detects key presses when the note is in the activator zone.
+ * - Determines hit quality (Normal, Good, Perfect) based on distance to hit line.
+ * - Plays corresponding visual effects.
+ * - Calls RhythmGameManager to update score or register misses.
+ */
+
 public class NoteObject : MonoBehaviour
 {
     [Header("Input")]
     public KeyCode[] keysToPress;
 
-    [Header("Timing thresholds (units: world-space Y distance to hitline)")]
+    [Header("Timing thresholds")]
+    [Tooltip("World-space Y distance to hitline")]
     public float normalThreshold = 0.25f;
     public float goodThreshold = 0.05f;
 
@@ -22,6 +33,7 @@ public class NoteObject : MonoBehaviour
 
         bool pressed = false;
 
+        // Check if any assigned key is pressed
         foreach (KeyCode key in keysToPress)
         {
             if (Input.GetKeyDown(key))
@@ -34,9 +46,10 @@ public class NoteObject : MonoBehaviour
         if (!pressed)
             return;
 
+        // Hide note once pressed
         gameObject.SetActive(false);
 
-        // Find the activator once per hit
+        // Calculate distance to hit line for judging accuracy
         float distance;
         GameObject go = GameObject.FindWithTag("Activator");
 
@@ -45,6 +58,7 @@ public class NoteObject : MonoBehaviour
         else
             distance = Mathf.Abs(transform.position.y); // fallback
 
+        // Score and spawn visual effects based on timing
         if (distance > normalThreshold)
         {
             RhythmGameManager.instance.NormalHit();
@@ -72,7 +86,7 @@ public class NoteObject : MonoBehaviour
     {
         if (other.CompareTag("Activator"))
         {
-            if (canBePressed) // only count as missed if it was activatable
+            if (canBePressed) // count as missed only if note was active
                 RhythmGameManager.instance.NoteMissed();
             canBePressed = false;
         }

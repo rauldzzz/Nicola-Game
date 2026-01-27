@@ -2,6 +2,16 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
+/*
+ * Door
+ * ----
+ * Handles player interaction with doors to teleport between positions or rooms.
+ * - Supports optional key locks (requires a keyID to open).
+ * - Freezes player movement during teleport.
+ * - Fades screen out, moves player, holds, then fades back in.
+ * - Prevents re-use while teleporting.
+ */
+
 public class Door : MonoBehaviour, IInteractable
 {
     [Header("Teleport Settings")]
@@ -19,14 +29,10 @@ public class Door : MonoBehaviour, IInteractable
 
     private bool isTeleporting = false;
 
-    /// <summary>
-    /// Returns whether this interactable can currently be used
-    /// </summary>
     public bool CanInteract()
     {
         if (isTeleporting) return false;
 
-        // Check if key is required
         if (!string.IsNullOrEmpty(requiredKeyID))
         {
             return SaveManager.Instance.collectedKeys.Contains(requiredKeyID);
@@ -35,9 +41,6 @@ public class Door : MonoBehaviour, IInteractable
         return true;
     }
 
-    /// <summary>
-    /// Called when the player interacts with this door
-    /// </summary>
     public void Interact()
     {
         if (!CanInteract())
@@ -52,9 +55,6 @@ public class Door : MonoBehaviour, IInteractable
         }
     }
 
-    /// <summary>
-    /// Handles fading, teleporting, holding, and restoring player control
-    /// </summary>
     private IEnumerator TeleportPlayer()
     {
         isTeleporting = true;
@@ -85,9 +85,6 @@ public class Door : MonoBehaviour, IInteractable
         isTeleporting = false;
     }
 
-    /// <summary>
-    /// Smooth fade for the UI image
-    /// </summary>
     private IEnumerator Fade(float targetAlpha)
     {
         fadeImage.gameObject.SetActive(true);

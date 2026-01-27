@@ -3,21 +3,32 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
 
+/*
+ * LevelFinish
+ * -----------
+ * Handles level completion when the player reaches the end zone.
+ * - Checks all assigned completion conditions.
+ * - Updates the UI to show progress on conditions.
+ * - Saves progress and coins using SaveManager.
+ * - Loads the overworld scene upon successful completion.
+ * - Was used in the 2D platformer minigame.
+ */
+
 public class LevelFinish : MonoBehaviour
 {
     [Header("Level Settings")]
-    public string levelName; // Optional: unique level identifier
-    public List<CompletionCondition> conditions; // Completion conditions
+    public string levelName;                    // Optional identifier for this level
+    public List<CompletionCondition> conditions; // List of conditions to complete the level
 
     [Header("UI")]
-    public TMP_Text conditionText;
+    public TMP_Text conditionText;              // UI element showing condition progress
 
     [Header("Scene Settings")]
-    public string overworldSceneName; // Name of your overworld scene
+    public string overworldSceneName;           // Name of the scene to load after completion
 
     private void Start()
     {
-        // Optionally auto-set levelName to the scene name
+        // Use the scene name as default levelName if none is set
         if (string.IsNullOrEmpty(levelName))
             levelName = SceneManager.GetActiveScene().name;
 
@@ -28,15 +39,18 @@ public class LevelFinish : MonoBehaviour
     {
         if (!collision.CompareTag("Player")) return;
 
+        // Only proceed if all conditions are fulfilled
         if (CheckAllConditions())
         {
             Debug.Log($"Level {levelName} completed!");
+
+            // Mark level as completed in the SaveManager
             SaveManager.Instance.CompleteLevel(levelName);
 
-            // Optional: store coins, etc. in SaveManager if needed
+            // Save coin progress
             SaveManager.Instance.totalCoins = CoinManager.Instance.TotalCoins;
 
-            // Load the overworld
+            // Load the overworld scene
             SceneManager.LoadScene(overworldSceneName);
         }
         else
@@ -45,6 +59,7 @@ public class LevelFinish : MonoBehaviour
         }
     }
 
+    // Returns true if all assigned completion conditions are fulfilled
     public bool CheckAllConditions()
     {
         if (conditions == null || conditions.Count == 0)
@@ -60,6 +75,7 @@ public class LevelFinish : MonoBehaviour
         return true;
     }
 
+    // Updates the UI text with the current status of each condition
     private void UpdateConditionUI()
     {
         if (conditionText == null) return;

@@ -1,6 +1,16 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+/*
+ * InteractionDetector
+ * -------------------
+ * Handles detecting and interacting with IInteractable objects.
+ * - Tracks the closest interactable in range.
+ * - Shows/hides an interaction icon when near an interactable.
+ * - Listens for keyboard or Input System interaction commands to trigger Interact().
+ * - Automatically clears the reference when leaving the interactable’s trigger.
+ */
+
 public class InteractionDetector : MonoBehaviour
 {
     private IInteractable interactableInRange = null; // Closest interactable

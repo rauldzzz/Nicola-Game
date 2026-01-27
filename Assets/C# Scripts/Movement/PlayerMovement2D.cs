@@ -1,19 +1,31 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(SpriteRenderer))]
+
+/*
+ * PlayerMovement2DPolished_Controls
+ * ----------------------------------
+ * Handles 2D movement and jumping for the player.
+ * - Horizontal movement (A/D or arrows)
+ * - Jumping with variable height and coyote time
+ * - Sprite flipping based on direction
+ * - Ground detection for jump logic
+ * - Was used in the plattformer minigame
+ */
+
 public class PlayerMovement2DPolished_Controls : MonoBehaviour
 {
     [Header("Movement Settings")]
-    public float moveSpeed = 7f;           // Horizontal movement speed
-    public float jumpForce = 14f;          // Initial jump velocity
-    public float variableJumpMultiplier = 0.5f; // Reduces jump height if jump is released early
+    public float moveSpeed = 7f;
+    public float jumpForce = 14f;
+    public float variableJumpMultiplier = 0.5f; // Shorten jump if released early
 
     [Header("Coyote Time Settings")]
-    public float coyoteTime = 0.1f;        // Time window to still jump after leaving ground
-    private float coyoteTimeCounter;       // Countdown timer for coyote jump
+    public float coyoteTime = 0.1f;
+    private float coyoteTimeCounter;           // How long we can still jump after leaving the ground
 
     [Header("Ground Check Settings")]
-    public Transform groundCheck;          // Empty object placed at player's feet
+    public Transform groundCheck;
     public float groundCheckRadius = 0.15f;
     public LayerMask groundLayer;
 
@@ -31,15 +43,14 @@ public class PlayerMovement2DPolished_Controls : MonoBehaviour
 
     void Update()
     {
-        // --- MOVEMENT INPUT ---
-        // Combine A/D with Left/Right Arrow keys manually
+        // Horizontal input
         moveInput = 0f;
         if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
             moveInput = -1f;
         else if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
             moveInput = 1f;
 
-        // --- GROUND CHECK ---
+        // Check if player is on the ground
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
 
         // Reset coyote timer when grounded
@@ -48,34 +59,34 @@ public class PlayerMovement2DPolished_Controls : MonoBehaviour
         else
             coyoteTimeCounter -= Time.deltaTime;
 
-        // --- JUMP INPUT (W or Space) ---
+        // Jump input
         if ((Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.Space)) && coyoteTimeCounter > 0f)
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
             isJumping = true;
         }
 
-        // --- VARIABLE JUMP HEIGHT ---
+        // Short jump if key released early
         if ((Input.GetKeyUp(KeyCode.W) || Input.GetKeyUp(KeyCode.Space)) && rb.linearVelocity.y > 0 && isJumping)
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, rb.linearVelocity.y * variableJumpMultiplier);
             isJumping = false;
         }
 
-        // --- FLIP SPRITE BASED ON DIRECTION ---
+        // Flip sprite to match movement direction
         if (moveInput != 0)
             spriteRenderer.flipX = moveInput < 0;
     }
 
     void FixedUpdate()
     {
-        // --- APPLY HORIZONTAL MOVEMENT ---
+        // Apply horizontal movement
         rb.linearVelocity = new Vector2(moveInput * moveSpeed, rb.linearVelocity.y);
     }
 
     void OnDrawGizmosSelected()
     {
-        // Draw the ground check radius in the editor for debugging
+        // Show ground check radius in editor
         if (groundCheck != null)
         {
             Gizmos.color = Color.green;

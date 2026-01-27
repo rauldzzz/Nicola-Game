@@ -1,5 +1,13 @@
 using UnityEngine;
 
+/*
+ * RhythmButtonController
+ * ----------------------
+ * Handles the visual feedback for a single rhythm button.
+ * - Changes the button sprite when keys are pressed or held.
+ * - Supports multiple keys for the same button.
+ */
+
 public class RhythmButtonController : MonoBehaviour
 {
     private SpriteRenderer theSR;
@@ -12,7 +20,7 @@ public class RhythmButtonController : MonoBehaviour
     void Start()
     {
         theSR = GetComponent<SpriteRenderer>();
-        theSR.sprite = defaultImage;
+        theSR.sprite = defaultImage; // Start with default button sprite
     }
 
     void Update()
@@ -20,6 +28,7 @@ public class RhythmButtonController : MonoBehaviour
         bool anyKeyDown = false;
         bool anyKeyHeld = false;
 
+        // Check all assigned keys
         foreach (KeyCode key in keysToPress)
         {
             if (Input.GetKeyDown(key))
@@ -29,17 +38,16 @@ public class RhythmButtonController : MonoBehaviour
                 anyKeyHeld = true;
         }
 
-        // If any assigned key was just pressed
+        // Show pressed sprite if any key was just pressed
         if (anyKeyDown)
         {
             theSR.sprite = pressedImage;
         }
 
-        // If none of the assigned keys are held anymore
+        // Revert to default sprite when no keys are held
         if (!anyKeyHeld)
         {
             theSR.sprite = defaultImage;
         }
     }
 }
-

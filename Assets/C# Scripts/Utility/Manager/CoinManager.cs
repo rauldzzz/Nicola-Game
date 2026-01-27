@@ -2,6 +2,16 @@ using System.Collections;
 using UnityEngine;
 using TMPro;
 
+/*
+ * CoinManager
+ * -----------
+ * Handles tracking the player's coins and updating the UI.
+ * - Uses a singleton pattern for easy access.
+ * - Updates coin text and optionally plays a pop animation on the coin icon.
+ * - Loads saved coin count from SaveManager on start.
+ * - Was used in the old overworld and 2D platformer minigame.
+ */
+
 public class CoinManager : MonoBehaviour
 {
     public static CoinManager Instance;
@@ -15,12 +25,11 @@ public class CoinManager : MonoBehaviour
     public float popTime = 0.15f;
 
     private int totalCoins = 0;
-
     public int TotalCoins => totalCoins;
 
     private void Awake()
     {
-        // Singleton pattern
+        // Singleton pattern: ensure only one instance exists
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
@@ -31,13 +40,12 @@ public class CoinManager : MonoBehaviour
 
     private void Start()
     {
-        totalCoins = SaveManager.Instance.totalCoins; // Load saved total
+        // Load saved total coins
+        totalCoins = SaveManager.Instance.totalCoins;
         UpdateUI();
     }
 
-    /// <summary>
-    /// Add coins and update UI
-    /// </summary>
+    // Add coins, update UI, and play pop animation
     public void AddCoins(int amount)
     {
         totalCoins += amount;
@@ -45,18 +53,14 @@ public class CoinManager : MonoBehaviour
         PlayCoinUIAnimation();
     }
 
-    /// <summary>
-    /// Update the coin text
-    /// </summary>
+    // Refresh coin counter text
     public void UpdateUI()
     {
         if (coinText != null)
             coinText.text = totalCoins.ToString();
     }
 
-    /// <summary>
-    /// Simple pop animation for the coin icon UI
-    /// </summary>
+    // Play pop animation on coin icon
     public void PlayCoinUIAnimation()
     {
         if (coinIconUI != null)
@@ -69,6 +73,7 @@ public class CoinManager : MonoBehaviour
         Vector3 targetScale = originalScale * popScale;
 
         float elapsed = 0f;
+        // Scale up
         while (elapsed < popTime)
         {
             elapsed += Time.deltaTime;
@@ -77,6 +82,7 @@ public class CoinManager : MonoBehaviour
         }
 
         elapsed = 0f;
+        // Scale back down
         while (elapsed < popTime)
         {
             elapsed += Time.deltaTime;

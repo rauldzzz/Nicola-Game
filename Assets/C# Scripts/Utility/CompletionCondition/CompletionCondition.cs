@@ -1,16 +1,20 @@
 using UnityEngine;
 
-/// <summary>
-/// Base class for a level completion condition
-/// </summary>
+/*
+ * CompletionCondition
+ * ------------------
+ * Base class for any condition that must be met to complete a level.
+ * - Derived classes implement the actual check and UI status.
+ */
+
 [System.Serializable]
 public abstract class CompletionCondition
 {
-    public string description;
+    public string description; // Optional description for UI or debugging
 
-    // Check if condition is fulfilled
+    // Check whether the condition has been fulfilled
     public abstract bool IsFulfilled();
 
-    // Return a status string for the UI (e.g., "Enemies: 3/5")
+    // Return a string representing progress for the UI (e.g., "3/5 enemies defeated")
     public abstract string GetStatusText();
 }

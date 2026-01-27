@@ -1,34 +1,40 @@
 using System.Collections;
 using UnityEngine;
 
-/// <summary>
-/// A self-contained 2D patrolling enemy that automatically turns around when it detects
-/// a wall or ledge. It damages the player on contact and can be stomped.
-/// </summary>
+/*
+ * EnemyPatrol_Auto
+ * ----------------
+ * A self-contained 2D patrolling enemy.
+ * - Automatically turns around when it detects a wall or a ledge
+ * - Damages the player on contact with knockback
+ * - Can be stomped (killed) by the player to destroy it
+ * - Requires Rigidbody2D and SpriteRenderer components
+ * - Was used in the 2D platformer minigame
+ */
 [RequireComponent(typeof(Rigidbody2D), typeof(SpriteRenderer))]
 public class EnemyPatrol_Auto : MonoBehaviour, IStompable
 {
     [Header("Movement Settings")]
     public float moveSpeed = 2f;                     // Horizontal patrol speed
-    public float groundCheckDistance = 0.2f;         // How far ahead to check for ground (ledge detection)
-    public float wallCheckDistance = 0.1f;           // How far ahead to check for walls
+    public float groundCheckDistance = 0.2f;         // Distance for ledge detection
+    public float wallCheckDistance = 0.1f;           // Distance for wall detection
     public LayerMask groundLayer;                    // Layer mask for ground/walls
 
     [Header("Damage Settings")]
-    public int damageAmount = 1;                     // How much damage to deal to player
-    public float knockbackForce = 5f;                // Knockback applied to player when touched
+    public int damageAmount = 1;                     // Damage dealt to player on contact
+    public float knockbackForce = 5f;                // Knockback applied to player
 
     [Header("Stomp Settings")]
-    public float flashDuration = 0.2f;              // Flash duration when stomped
-    public bool isStomped = false;                  // Flag to prevent multiple stomps
+    public float flashDuration = 0.2f;               // Flash duration when stomped
+    public bool isStomped = false;                   // Prevent multiple stomps
 
     [Header("References")]
-    public Transform groundCheck;                    // Empty child at the enemy’s feet
-    public Transform wallCheck;                      // Empty child in front of the enemy
-    public SpriteRenderer spriteRenderer;           // SpriteRenderer reference
+    public Transform groundCheck;                    // Empty child for ground/ledge detection
+    public Transform wallCheck;                      // Empty child for wall detection
+    public SpriteRenderer spriteRenderer;            // SpriteRenderer component
 
     private Rigidbody2D rb;
-    private bool movingRight = true;                 // Direction flag
+    private bool movingRight = true;                 // Current movement direction
 
     void Start()
     {
@@ -38,7 +44,7 @@ public class EnemyPatrol_Auto : MonoBehaviour, IStompable
         if (spriteRenderer == null)
             spriteRenderer = GetComponent<SpriteRenderer>();
 
-        // Safety check: create placeholders if not assigned
+        // Create placeholder groundCheck if missing
         if (groundCheck == null)
         {
             GameObject gc = new GameObject("GroundCheck");
@@ -47,6 +53,7 @@ public class EnemyPatrol_Auto : MonoBehaviour, IStompable
             groundCheck = gc.transform;
         }
 
+        // Create placeholder wallCheck if missing
         if (wallCheck == null)
         {
             GameObject wc = new GameObject("WallCheck");
@@ -63,17 +70,17 @@ public class EnemyPatrol_Auto : MonoBehaviour, IStompable
     }
 
     /// <summary>
-    /// Moves the enemy and checks for ledges or walls to turn around automatically.
+    /// Patrols horizontally and flips direction on ledge or wall detection
     /// </summary>
     void Patrol()
     {
         // Apply horizontal velocity
         rb.linearVelocity = new Vector2((movingRight ? 1 : -1) * moveSpeed, rb.linearVelocity.y);
 
-        // Raycast downward to check for ground (ledge detection)
+        // Raycast downward to detect ledge
         RaycastHit2D groundHit = Physics2D.Raycast(groundCheck.position, Vector2.down, groundCheckDistance, groundLayer);
 
-        // Raycast forward to check for wall
+        // Raycast forward to detect wall
         Vector2 wallDir = movingRight ? Vector2.right : Vector2.left;
         RaycastHit2D wallHit = Physics2D.Raycast(wallCheck.position, wallDir, wallCheckDistance, groundLayer);
 
@@ -85,25 +92,23 @@ public class EnemyPatrol_Auto : MonoBehaviour, IStompable
     }
 
     /// <summary>
-    /// Flips direction and sprite horizontally.
+    /// Flips movement direction and mirrors sprite/check positions
     /// </summary>
     void Flip()
     {
         movingRight = !movingRight;
         spriteRenderer.flipX = !spriteRenderer.flipX;
 
-        // Also mirror check positions
+        // Mirror check positions
         Vector3 gcLocalPos = groundCheck.localPosition;
         Vector3 wcLocalPos = wallCheck.localPosition;
-
         gcLocalPos.x *= -1;
         wcLocalPos.x *= -1;
-
         groundCheck.localPosition = gcLocalPos;
         wallCheck.localPosition = wcLocalPos;
     }
 
-    // Called by PlayerDamageHandler when stomped
+    // Called when stomped by player
     public void Stomped()
     {
         if (isStomped) return;
@@ -111,19 +116,19 @@ public class EnemyPatrol_Auto : MonoBehaviour, IStompable
         StartCoroutine(StompDeathRoutine());
     }
 
+    // Handles the stomp death sequence
     private IEnumerator StompDeathRoutine()
     {
-        // Stop movement immediately
-        rb.linearVelocity = Vector2.zero;
+        rb.linearVelocity = Vector2.zero; // Stop movement
 
-        // Disable collider so player doesn't hit it again
+        // Disable collider to prevent further interactions
         Collider2D col = GetComponent<Collider2D>();
         if (col != null) col.enabled = false;
 
-        // Optionally disable patrol script to stop movement
+        // Stop patrol logic
         this.enabled = false;
 
-        // Flash white
+        // Flash white to indicate stomp
         Color original = spriteRenderer.color;
         spriteRenderer.color = Color.white;
 
@@ -132,6 +137,7 @@ public class EnemyPatrol_Auto : MonoBehaviour, IStompable
         Destroy(gameObject);
     }
     
+    // Draws gizmos for ground and wall detection in editor
     void OnDrawGizmosSelected()
     {
         if (groundCheck != null)

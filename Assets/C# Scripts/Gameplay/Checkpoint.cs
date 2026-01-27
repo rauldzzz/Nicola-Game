@@ -1,5 +1,16 @@
 using UnityEngine;
 
+/*
+ * Checkpoint
+ * ----------
+ * Handles player checkpoints in a scene.
+ * - Activates when the player enters its trigger.
+ * - Updates the RespawnManager with the current checkpoint.
+ * - Resets other checkpoints to inactive.
+ * - Updates the visual sprite to show active/inactive state.
+ * - Used in platformer levels to set respawn points.
+ */
+
 public class Checkpoint : MonoBehaviour
 {
     private bool isActive = false; // Tracks if this checkpoint is currently active
@@ -29,9 +40,7 @@ public class Checkpoint : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Activates this checkpoint, updates RespawnManager, and resets other checkpoints.
-    /// </summary>
+    // Activates this checkpoint, updates RespawnManager, and resets other checkpoints.
     private void ActivateCheckpoint()
     {
         isActive = true;
@@ -56,9 +65,7 @@ public class Checkpoint : MonoBehaviour
         Debug.Log("Checkpoint activated: " + name);
     }
 
-    /// <summary>
-    /// Sets this checkpoint back to default (inactive) state.
-    /// </summary>
+    // Sets this checkpoint back to default (inactive) state.
     public void SetInactive()
     {
         isActive = false;

@@ -1,6 +1,15 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+/*
+ * DeathPopupManager
+ * -----------------
+ * Handles the death popup UI and related scene/respawn logic.
+ * - Shows the death popup and pauses the game when the player dies.
+ * - Allows resetting the current scene, returning to the overworld, or going to the title screen.
+ * - Supports optional respawn point setup.
+ */
+
 public class DeathPopupManager : MonoBehaviour
 {
     [Header("UI")]
@@ -8,43 +17,33 @@ public class DeathPopupManager : MonoBehaviour
 
     [Header("Respawn")]
     public Transform respawnPoint;      // Set last checkpoint or level start (Optional)
-    [Tooltip("If empty: use player position (Tag = 'Player').")]
-    public bool autoUsePlayerPosition = true;
+    public bool autoUsePlayerPosition = true; // If true, will default to player object if respawnPoint is null
 
     [Header("Scene Settings")]
-    [Tooltip("For ResetScene (current scene)")]
-    public string resetSceneName = "";
+    public string resetSceneName = "";        // Optional: name for current scene reset
+    public string overworldSceneName = "OWTest";  // Optional: overworld scene
+    public string titleScreenSceneName = "StartScene"; // Optional: title screen scene
 
-    [Tooltip("LoadOverworld")]
-    public string overworldSceneName = "OWTest";
-
-    [Tooltip("LoadTitleScreen")]
-    public string titleScreenSceneName = "StartScene";
-    private bool isActive = false;
+    private bool isActive = false; // Tracks whether the death popup is currently active
 
     void Awake()
-    {   // Hide the popup at the start
+    {
+        // Hide the popup at the start
         if (deathPopup != null)
             deathPopup.SetActive(false);
 
-        // RespawnPoint set to player if left empty
+        // If respawn point not assigned, use the player's position
         if (respawnPoint == null && autoUsePlayerPosition)
         {
             GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
             if (playerObj != null)
-            {
                 respawnPoint = playerObj.transform;
-            }
             else
-            {
                 Debug.LogWarning("No object with Tag 'Player'! RespawnPoint stays empty.");
-            }
         }
     }
 
-    /// <summary>
-    /// Call this when player dies
-    /// </summary>
+    // Call this when the player dies to show the popup and pause the game
     public void ShowDeathPopup()
     {
         if (isActive) return;
@@ -58,17 +57,13 @@ public class DeathPopupManager : MonoBehaviour
         Time.timeScale = 0f;
     }
 
-    /// <summary>
-    /// Resume normal time
-    /// </summary>
+    // Resume normal game time
     public void ResumeTime()
     {
         Time.timeScale = 1f;
     }
 
-    /// <summary>
-    /// Reloads the current scene
-    /// </summary>
+    // Reload the current scene (or optional resetSceneName)
     public void ResetScene()
     {
         ResumeTime();
@@ -84,24 +79,22 @@ public class DeathPopupManager : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Load the overworld scene
-    /// </summary>
+    // Load the overworld scene
     public void LoadOverworld()
     {
         ResumeTime();
+
         if (!string.IsNullOrEmpty(overworldSceneName))
             SceneManager.LoadScene(overworldSceneName);
         else
             Debug.LogWarning("Overworld Scene Name is empty!");
     }
 
-    /// <summary>
-    /// Load the title screen
-    /// </summary>
+    // Load the title screen
     public void LoadTitleScreen()
     {
         ResumeTime();
+
         if (!string.IsNullOrEmpty(titleScreenSceneName))
             SceneManager.LoadScene(titleScreenSceneName);
         else

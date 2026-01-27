@@ -4,6 +4,16 @@ using TMPro;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 
+/*
+ * CalendarManager
+ * ----------------
+ * Handles the course selection and calendar display for the minigame.
+ * - Generates sidebar list of courses
+ * - Updates calendar grid each week
+ * - Detects overlapping sessions
+ * - Tracks total ECTS and triggers win condition
+ * - Loads next scene and saves overworld position
+ */
 public class CalendarManager : MonoBehaviour
 {
     [Header("Configuration")]
@@ -22,6 +32,8 @@ public class CalendarManager : MonoBehaviour
     public TextMeshProUGUI ectsLabel;
     public TextMeshProUGUI weekLabel;
     public GameObject winPanel;
+    
+    // True if any sessions overlap in the current week
     public bool isOverlapping = false;
 
     [Header("Grid Settings")]
@@ -36,6 +48,7 @@ public class CalendarManager : MonoBehaviour
     [Header("Level Settings")]
     public string levelName = "CalendarMinigame";
 
+    // Internal state
     private List<CourseData> selectedCourses = new List<CourseData>();
     private int currentWeek = 0;
     private float currentTotalECTS = 0;
@@ -46,6 +59,7 @@ public class CalendarManager : MonoBehaviour
         UpdateCalendar();
     }
 
+    // Creates the list of selectable courses in the sidebar
     void GenerateSidebar()
     {
         foreach (var course in allCourses)
@@ -56,6 +70,7 @@ public class CalendarManager : MonoBehaviour
         }
     }
 
+    // Called by UI items when a course is selected or deselected
     public void ToggleCourse(CourseData course, bool isSelected)
     {
         if (isSelected)
@@ -73,6 +88,7 @@ public class CalendarManager : MonoBehaviour
         UpdateCalendar();
     }
 
+    // Sums ECTS of selected courses and updates UI
     void CalculateECTS()
     {
         currentTotalECTS = 0;
@@ -83,6 +99,7 @@ public class CalendarManager : MonoBehaviour
         CheckWinCondition();
     }
 
+    // Move between weeks
     public void ChangeWeek(int direction)
     {
         currentWeek += direction;
@@ -92,6 +109,7 @@ public class CalendarManager : MonoBehaviour
         UpdateCalendar();
     }
 
+    // Clears and updates calendar grid for current week
     void UpdateCalendar()
     {
         foreach (Transform child in calendarGrid) Destroy(child.gameObject);
@@ -112,6 +130,7 @@ public class CalendarManager : MonoBehaviour
         CheckOverlaps(activeBlocks);
     }
 
+    // Instantiates a UI block for a course session
     void CreateBlock(CourseData course, Session session, List<GameObject> activeBlocks)
     {
         GameObject block = Instantiate(eventBlockPrefab, calendarGrid);
@@ -121,28 +140,25 @@ public class CalendarManager : MonoBehaviour
 
         RectTransform rect = block.GetComponent<RectTransform>();
         rect.anchoredPosition = new Vector2(xPos, yPos);
-
         rect.sizeDelta = new Vector2(colWidth, session.duration * rowHeight);
 
         block.GetComponent<Image>().color = course.courseColor;
 
+        // Attach CalendarBlock component for tracking
         CalendarBlock blockData = block.AddComponent<CalendarBlock>();
         blockData.courseName = course.courseName;
         blockData.rect = rect;
         blockData.img = block.GetComponent<Image>();
         blockData.normalColor = course.courseColor;
 
+        // Set texts inside the block (name and ECTS)
         var texts = block.GetComponentsInChildren<TMPro.TextMeshProUGUI>();
-
         foreach (var t in texts)
         {
             if (t.name == "BlockNameText")
             {
                 blockData.nameText = t;
-                if (string.IsNullOrEmpty(course.shortName))
-                    blockData.nameText.text = course.courseName;
-                else
-                    blockData.nameText.text = course.shortName;
+                blockData.nameText.text = string.IsNullOrEmpty(course.shortName) ? course.courseName : course.shortName;
             }
             else if (t.name == "BlockECTSText")
             {
@@ -154,16 +170,19 @@ public class CalendarManager : MonoBehaviour
         activeBlocks.Add(block);
     }
 
+    // Highlights overlapping sessions in red
     void CheckOverlaps(List<GameObject> blocks)
     {
         isOverlapping = false;
 
+        // Reset colors first
         foreach (var b in blocks)
         {
             var cb = b.GetComponent<CalendarBlock>();
             cb.img.color = cb.normalColor;
         }
 
+        // Check for overlaps
         for (int i = 0; i < blocks.Count; i++)
         {
             for (int j = i + 1; j < blocks.Count; j++)
@@ -173,6 +192,7 @@ public class CalendarManager : MonoBehaviour
 
                 if (IsOverlapping(b1.rect, b2.rect))
                 {
+                    // Mark both blocks red
                     b1.img.color = new Color(1f, 0.3f, 0.3f);
                     b2.img.color = new Color(1f, 0.3f, 0.3f);
                     isOverlapping = true; 
@@ -183,6 +203,7 @@ public class CalendarManager : MonoBehaviour
         CheckWinCondition();
     }
 
+    // Returns true if two blocks visually overlap
     bool IsOverlapping(RectTransform r1, RectTransform r2)
     {
         Rect rect1 = new Rect(r1.anchoredPosition.x, r1.anchoredPosition.y - r1.sizeDelta.y, r1.sizeDelta.x, r1.sizeDelta.y);
@@ -191,16 +212,15 @@ public class CalendarManager : MonoBehaviour
         return rect1.Overlaps(rect2);
     }
 
+    // Checks if the player has enough ECTS and no overlaps to win
     void CheckWinCondition()
     {
         bool hasEnoughPoints = currentTotalECTS >= targetECTS;
-
         bool isSafe = !isOverlapping;
 
         if (hasEnoughPoints && isSafe)
         {
             if (nextScene != null) nextScene.SetActive(true);
-
             if(winPanel != null) winPanel.SetActive(true);
         }
         else
@@ -210,19 +230,20 @@ public class CalendarManager : MonoBehaviour
         }
     }
 
+    // Called by UI button to proceed to next scene
     public void LoadNextScene()
     {
-                if (SaveManager.Instance != null)
+        if (SaveManager.Instance != null)
         {
             SaveManager.Instance.CompleteLevel(levelName);
-
-            // Directly set the overworld position
             SaveManager.Instance.SaveOverworldPosition(overworldSpawnPosition);
         }
+
         SceneManager.LoadScene(nextSceneName);
     }
 }
 
+// Attached to each calendar block for tracking its UI and state
 public class CalendarBlock : MonoBehaviour
 {
     public string courseName;
@@ -233,4 +254,3 @@ public class CalendarBlock : MonoBehaviour
     public TMPro.TextMeshProUGUI nameText;
     public TMPro.TextMeshProUGUI ectsText;
 }
-

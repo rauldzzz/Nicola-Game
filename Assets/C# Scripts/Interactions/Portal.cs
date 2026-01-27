@@ -1,6 +1,16 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+/*
+ * Portal
+ * ------
+ * Implements IInteractable to allow the player to transition between scenes.
+ * - Loads a specified scene when interacted with.
+ * - Optionally saves the player's overworld position if this is a level entrance.
+ * - Updates the last visited level in the SaveManager.
+ * - Logs warnings if required references are missing.
+ */
+
 public class Portal : MonoBehaviour, IInteractable
 {
     [Header("Scene Settings")]
@@ -17,6 +27,7 @@ public class Portal : MonoBehaviour, IInteractable
             return;
         }
 
+        // Save player position before loading a new level if this portal is an entrance
         if (isLevelEntrance)
         {
             GameObject player = GameObject.FindGameObjectWithTag("Player");
@@ -31,6 +42,7 @@ public class Portal : MonoBehaviour, IInteractable
             }
         }
 
+        // Load the specified scene
         SceneManager.LoadScene(sceneToLoad);
     }
 }

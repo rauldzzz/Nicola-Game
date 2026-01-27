@@ -4,31 +4,45 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
+
+/*
+ * BusGameManager
+ * --------------
+ * Controls the overall flow of the bus minigame:
+ * - Spawning obstacles
+ * - Tracking progress over time (distance)
+ * - Handling win condition, braking, and transition back to the overworld
+ */
 public class BusGameManager : MonoBehaviour
 {
+    // Singleton instance for easy access from other scripts
     public static BusGameManager Instance;
 
     [Header("Next Level Setup")]
-    // 1. This is the box you drag the scene into
 #if UNITY_EDITOR
+    // Scene reference used only in the editor for convenience
     public UnityEditor.SceneAsset nextSceneFile;
 #endif
-    // 2. This is the hidden text variable the game actually uses
+    // Scene name used at runtime
     [HideInInspector] public string nextSceneName;
 
     [Header("Game Settings")]
+    [Tooltip("Current gameSpeed")]
     public float gameSpeed = 10f;
 
     [Header("Game Settings")]
+    [Tooltip("Prefab for the rock obstacles and game duration/distance")]
     public GameObject rockPrefab;
     public float gameDuration = 60f;
     public float totalDistance = 100f;
 
     [Header("Spawning")]
+    [Tooltip("Controls how often obstacles appear and lane spacing")]
     public float spawnInterval = 1.5f;
     public float laneDistance = 1.5f;
 
     [Header("References")]
+    [Tooltip("References to player, UI, and progress display")]
     public BusController busController;
     public GameObject winPanel;
     public Slider progressSlider;
@@ -38,15 +52,18 @@ public class BusGameManager : MonoBehaviour
     [Tooltip("Optional: set this to override the overworld spawn position")]
     public Vector3 overworldSpawnPosition;
 
+    // Internal state tracking
     private float timer;
     private float currentDistance;
     private bool gameFinished = false;
-    private List<GameObject> spawnedRocks = new List<GameObject>();
 
+    // Keeps track of spawned obstacles for cleanup
+    private List<GameObject> spawnedRocks = new List<GameObject>();
 
     void OnValidate()
     {
 #if UNITY_EDITOR
+        // Automatically sync scene name from SceneAsset
         if (nextSceneFile != null)
         {
             nextSceneName = nextSceneFile.name;
@@ -56,11 +73,13 @@ public class BusGameManager : MonoBehaviour
 
     void Awake()
     {
+        // Set singleton instance
         Instance = this;
     }
 
     void Start()
     {
+        // Hide win UI at the start
         if (winPanel != null)
         {
             winPanel.SetActive(false);
@@ -68,14 +87,14 @@ public class BusGameManager : MonoBehaviour
 
         currentDistance = totalDistance;
 
-        // Initialize Slider
+        // Initialize progress slider to full distance
         if (progressSlider != null)
         {
             progressSlider.maxValue = totalDistance;
             progressSlider.value = totalDistance;
         }
 
-        // Start Spawning Rocks
+        // Start spawning obstacles repeatedly
         InvokeRepeating(nameof(SpawnRock), 1f, spawnInterval);
     }
 
@@ -83,13 +102,21 @@ public class BusGameManager : MonoBehaviour
     {
         if (gameFinished) return;
 
+        // Advance game timer
         timer += Time.deltaTime;
+
+        // Calculate how fast distance decreases over time
         float depreciationRate = totalDistance / gameDuration;
         currentDistance -= depreciationRate * Time.deltaTime;
 
-        if (distanceText != null) distanceText.text = currentDistance.ToString("F1") + " km";
-        if (progressSlider != null) progressSlider.value = currentDistance;
+        // Update UI elements
+        if (distanceText != null)
+            distanceText.text = currentDistance.ToString("F1") + " km";
 
+        if (progressSlider != null)
+            progressSlider.value = currentDistance;
+
+        // End the game when the timer runs out
         if (timer >= gameDuration)
         {
             FinishGame();
@@ -100,10 +127,10 @@ public class BusGameManager : MonoBehaviour
     {
         if (gameFinished) return;
 
-        // Randomly choose left (-1) or right (1)
+        // Randomly choose left or right lane
         float spawnX = (Random.Range(0, 2) == 0) ? -laneDistance : laneDistance;
 
-        // Spawn just above the screen (e.g., Y = 6)
+        // Spawn obstacle slightly above the visible screen
         Vector3 spawnPos = new Vector3(spawnX, 6f, 0);
         GameObject rock = Instantiate(rockPrefab, spawnPos, Quaternion.identity);
 
@@ -115,20 +142,21 @@ public class BusGameManager : MonoBehaviour
         gameFinished = true;
         currentDistance = 0;
 
-        // 1. Stop spawning NEW rocks immediately
+        // Stop spawning new obstacles
         CancelInvoke(nameof(SpawnRock));
 
-        // 2. Despawn ALL existing rocks
+        // Remove all existing obstacles
         DespawnAllRocks();
 
-        // 3. Start the smooth braking coroutine instead of setting speed to 0 instantly
+        // Gradually slow the game instead of stopping instantly
         StartCoroutine(BrakeToStop());
 
-        // 4. Tell bus to park
-        if (busController != null) busController.StartArrivalSequence();
+        // Trigger bus arrival cutscene
+        if (busController != null)
+            busController.StartArrivalSequence();
 
-        // 5. Show UI after a delay (Wait for the bus to fully stop first)
-        Invoke(nameof(ShowWinUI), 3.5f); // Increased delay to 3.5s to account for braking time
+        // Show win UI after braking finishes
+        Invoke(nameof(ShowWinUI), 3.5f);
     }
 
     void DespawnAllRocks()
@@ -142,38 +170,40 @@ public class BusGameManager : MonoBehaviour
         spawnedRocks.Clear();
     }
 
-    // This is the new smooth braking logic
-    System.Collections.IEnumerator BrakeToStop()
+    // Smoothly reduces game speed to zero over a fixed duration
+    IEnumerator BrakeToStop()
     {
         float startSpeed = gameSpeed;
-        float duration = 3.0f; // How long it takes to stop (3 seconds)
+        float duration = 3.0f;
         float elapsed = 0f;
 
         while (elapsed < duration)
         {
-            // Reduce speed over time
             gameSpeed = Mathf.Lerp(startSpeed, 0f, elapsed / duration);
             elapsed += Time.deltaTime;
-            yield return null; // Wait for next frame
+            yield return null;
         }
 
-        gameSpeed = 0f; // Ensure it hits exactly 0 at the end
-    }
-    void ShowWinUI()
-    {
-        if (winPanel != null) winPanel.SetActive(true);
+        gameSpeed = 0f;
     }
 
-    // Call this from the Button
+    void ShowWinUI()
+    {
+        if (winPanel != null)
+            winPanel.SetActive(true);
+    }
+
+    // Called by UI button to return to the overworld
     public void LoadNextScene()
     {
         if (!string.IsNullOrEmpty(nextSceneName))
         {
             if (SaveManager.Instance != null)
             {
-                // Directly set the overworld position
+                // Store overworld spawn position before switching scenes
                 SaveManager.Instance.SaveOverworldPosition(overworldSpawnPosition);
             }
+
             SceneManager.LoadScene(nextSceneName);
         }
         else
